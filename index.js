@@ -3,13 +3,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const mongoose_morgan = require('mongoose-morgan');
+const config = require('config');
 
 //Importing Files
 const connection = require('./connection');
 const admin = require('./routes/admin');
 
 //Connection to MongoDB
-const connectionString = "mongodb+srv://arunkarthickm:Arun%40007@cluster0.dfr13.mongodb.net/OnYourMarks?retryWrites=true&w=majority";
+const connectionString = `mongodb+srv://${config.get('DBUserName')}:${config.get('DBPassword')}@cluster0.dfr13.mongodb.net/OnYourMarks?retryWrites=true&w=majority`;
 connection.connectDB(connectionString,"OnYourMarks");
 
 //Setting certain packages
