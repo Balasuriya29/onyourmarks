@@ -7,7 +7,7 @@ const examSchema = new mongoose.Schema({
     exam_name: String,
     subjects:[{
         type:mongoose.Schema.Types.ObjectId,
-        ref:''
+        ref:'subject'
     }],
     marks:[
         Number

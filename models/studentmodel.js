@@ -13,6 +13,7 @@ const subStudentSchema = new mongoose.Schema({
 //Defining a studentSchema
 const studentSchema = new mongoose.Schema({
     name: String,
+    roll_no: String,
     std: String,
     dob: Date,
     gender: String,
@@ -39,6 +40,7 @@ const Student = mongoose.model('newStudent', studentSchema, 'student');
 function validateStudent(student) {
     const tempschema = Joi.object({
         name: Joi.string().required(),
+        roll_no:Joi.required(),
         std: Joi.string().required(),
         dob: Joi.date().required(),
         gender: Joi.string().required(),

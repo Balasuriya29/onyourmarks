@@ -16,6 +16,13 @@ connection.connectDB(connectionString,"OnYourMarks");
 //Setting certain packages
 const app = express();
 app.use(express.json());
+app.use(helmet())
+app.use(mongoose_morgan({
+  collection: 'logs',
+  connectionString: connectionString,
+ },{},
+ 'common'
+));
 app.use(helmet());
 
 // console.log(app.get('env'));
