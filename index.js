@@ -31,7 +31,6 @@ if(app.get('env') === "development"){
 
 app.use('/api/admin', admin);
 
-
 //Default Route
 app.get("/", (req,res) => {
     res.status(200).send("Everything is Working Perfectly!!!");
