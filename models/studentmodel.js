@@ -45,7 +45,6 @@ function validateStudent(student) {
         motherTongue: Joi.string().required(),
         bloodGroup: Joi.string().required(),
     });
-
     return tempschema.validate(student);
 }
 
