@@ -25,8 +25,6 @@ app.use(mongoose_morgan({
 ));
 app.use('/api/admin', admin);
 
-console.log("Vanaka maame Main la than da iruka");
-
 //Default Route
 app.get("/", (req,res) => {
     res.status(200).send("Everything is Working Perfectly!!!");
