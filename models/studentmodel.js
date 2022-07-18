@@ -13,6 +13,7 @@ const subStudentSchema = new mongoose.Schema({
 //Defining a studentSchema
 const studentSchema = new mongoose.Schema({
     name: String,
+    roll_no: String,
     std: String,
     dob: Date,
     gender: String,
@@ -27,12 +28,7 @@ const studentSchema = new mongoose.Schema({
     motherTongue: String,
     bloodGroup: String,
     marks: [{
-<<<<<<< HEAD
-        type:Mixed,
-        ref:'exam'
-=======
         type:subStudentSchema,
->>>>>>> 04d80cc032278e2361624303636614d66e85826d
     }]
 });
 
@@ -44,6 +40,7 @@ const Student = mongoose.model('newStudent', studentSchema, 'student');
 function validateStudent(student) {
     const tempschema = Joi.object({
         name: Joi.string().required(),
+        roll_no:Joi.required(),
         std: Joi.string().required(),
         dob: Joi.date().required(),
         gender: Joi.string().required(),
