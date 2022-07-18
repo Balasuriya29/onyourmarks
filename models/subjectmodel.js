@@ -28,4 +28,5 @@ function validateSubject(subject){
 }
 
 module.exports.Subject = Subject;
+
 module.exports.validateSubject = validateSubject;
