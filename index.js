@@ -23,6 +23,20 @@ app.use(mongoose_morgan({
  },{},
  'common'
 ));
+app.use(helmet());
+
+// console.log(app.get('env'));
+
+if(app.get('env') === "development"){
+  app.use(mongoose_morgan({
+    collection: 'logs',
+    connectionString: connectionString,
+   },{},
+   'common'
+  ));
+}
+
+app.use('/api/admin', admin);
 
 app.use('/api/admin', admin);
 

@@ -2,6 +2,14 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 
+const subStudentSchema = new mongoose.Schema({
+    subject_id:{ 
+        type:mongoose.Schema.Types.ObjectId,
+    },
+    obtained : Number,
+    total_marks : Number
+});
+
 //Defining a studentSchema
 const studentSchema = new mongoose.Schema({
     name: String,
@@ -19,8 +27,12 @@ const studentSchema = new mongoose.Schema({
     motherTongue: String,
     bloodGroup: String,
     marks: [{
+<<<<<<< HEAD
         type:Mixed,
         ref:'exam'
+=======
+        type:subStudentSchema,
+>>>>>>> 04d80cc032278e2361624303636614d66e85826d
     }]
 });
 
@@ -45,6 +57,7 @@ function validateStudent(student) {
         permanentAddress: Joi.string().required(),
         motherTongue: Joi.string().required(),
         bloodGroup: Joi.string().required(),
+        marks: Joi.required(),
     });
     return tempschema.validate(student);
 }
