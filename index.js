@@ -25,7 +25,6 @@ app.use(mongoose_morgan({
 ));
 app.use('/api/admin', admin);
 
-console.log("Vanaka maame master la iruntu");
 
 //Default Route
 app.get("/", (req,res) => {
