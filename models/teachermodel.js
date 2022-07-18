@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const Joi = require("joi");
 
-//Defining a adminSchema
+//Defining a teacherSchema
 const teacherSchema = new mongoose.Schema({
     name: String,
     std: String,

@@ -34,4 +34,6 @@ router.get("/getAll", async (req,res) => {
 
 });
 
+//DB POST -
+
 module.exports = router;
