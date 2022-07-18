@@ -19,10 +19,11 @@ const studentSchema = new mongoose.Schema({
     motherTongue: String,
     bloodGroup: String,
     marks: [{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:''
+        type:Mixed,
+        ref:'exam'
     }]
 });
+
 
 //Creating a Model
 const Student = mongoose.model('newStudent', studentSchema, 'student');

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const studentModel = require('../models/studentmodel');
 const teacherModel = require('../models/teachermodel');
+const examModel = require('../models/exammodel');
 
 //DB POST - API CALL 1
 router.post("/Student/add",async (req, res)=>{
@@ -10,7 +11,7 @@ router.post("/Student/add",async (req, res)=>{
 
     const student = new studentModel.Student(req.body);
 
-    const result = await student.save()
+    await student.save()
         .then((v) => {
             res.status(200).send(v);
         });
@@ -23,7 +24,7 @@ router.post("/Teacher/add",async (req, res)=>{
 
     const teacher = new teacherModel.Teacher(req.body);
 
-    const result = await teacher.save()
+    await teacher.save()
         .then((v) => {
             res.status(200).send(v);
         });
@@ -34,6 +35,17 @@ router.get("/getAll", async (req,res) => {
 
 });
 
-//DB POST -
+//DB POST - API CALL 4
+router.post("/Exam/add", async (req,res) => {
+    const {error} = examModel.validateExam(req.body);
+    if(error) return res.status(404).send(error.details[0].message);
+
+    const exam = new examModel.Exam(req.body);
+
+    await exam.save()
+        .then((v) => {
+            res.status(200).send(v);
+        });   
+})
 
 module.exports = router;

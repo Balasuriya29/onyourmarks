@@ -23,6 +23,7 @@ app.use(mongoose_morgan({
  },{},
  'common'
 ));
+
 app.use('/api/admin', admin);
 
 //Default Route
