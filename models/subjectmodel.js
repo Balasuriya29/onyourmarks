@@ -11,7 +11,7 @@ const subjectSchema = new mongoose.Schema({
         }],
     students:[{
             type:mongoose.Schema.Types.ObjectId,
-            ref:'student'
+            ref:'student',
         }]
 });
 

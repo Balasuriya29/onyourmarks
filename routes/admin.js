@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const studentModel = require('../models/studentmodel');
 const teacherModel = require('../models/teachermodel');
+const subjectModel = require('../models/subjectmodel');
 
 //DB POST - API CALL 1
 router.post("/Student/add",async (req, res)=>{
@@ -34,6 +35,18 @@ router.get("/getAll", async (req,res) => {
 
 });
 
-//DB POST -
+//DB POST - API CALL 4
+router.post("/Subject/add",async (req,res)=>{
+    const {error} = subjectModel.validateSubject(req.body);
+    if(error) return res.status(404).send(error.details[0].message);
+
+    const subject = new subjectModel.Subject(req.body);
+
+    const result = await subject.save()
+        .then((v)=>{
+            res.status(200).send(v);
+        });
+});
+
 
 module.exports = router;
