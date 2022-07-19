@@ -8,6 +8,8 @@ const studentModel = require('../models/studentmodel');
 const teacherModel = require('../models/teachermodel');
 const examModel = require('../models/exammodel');
 const subjectModel = require('../models/subjectmodel');
+const cocurricularactivity = require('../models/cocurricularactivity');
+const { ObjectID } = require('mongodb');
 
 //DB POST - API CALL 1
 router.post("/Student/add",async (req, res)=>{
@@ -88,7 +90,15 @@ router.delete("/Teacher/delete",async (req,res)=>{
         _id: req.body.id
     }).then((v)=>res.send("Successfully deleted"))
         .catch((err)=>res.send(err));
-    })
+})
+
+//Delete Exam
+router.delete("/Exam/delete",async (req,res)=>{
+    await examModel.Exam.deleteOne({
+        _id: req.body.id
+    }).then((v)=>res.send("Successfully deleted"))
+        .catch((err)=>res.send(err));
+})
     
     //DB UPDATE - API CALL 7
 router.put('/Teacher/update/:id', async (req,res) => {
@@ -99,5 +109,47 @@ router.put('/Teacher/update/:id', async (req,res) => {
     res.send(teacherToBeUpdated);
 });
 
+// Getting Teacher details
+
+router.get('/Teacher/:id',async (req,res)=>{
+    try{
+        const teacher = await teacherModel.Teacher.findById(req.params.id);
+        if(!teacher) return res.status(404).send("Teacher not found");
+        res.send(teacher);
+    }
+    catch(err){
+        res.status(400).send("Invalid id");
+    }
+});
+
+// Getting Student details
+
+router.get('/Student/:roll_no',async (req,res)=>{
+    try{
+        const student = await studentModel.Student.findOne({
+            roll_no : req.params.roll_no
+        }).populate('marks.subject_id',['sub_name']);
+        console.log(student);
+        if(!student) return res.status(404).send("Student not found");
+        res.send(student);
+    }
+    catch(err){
+        console.log(err);
+        res.status(400).send(err);
+    }
+});
+
+// Getting Student's Co-Curricular Activities
+
+router.get('/get-cca/:condition', async(req,res)=>{
+    var condition = false;
+    if(req.params.condition === "true"){
+        condition = true;
+    }
+    const cca = await cocurricularactivity.coCurricularActivity
+            .find({isVerified:condition})
+            .populate('student_id',['roll_no','name']);
+    res.send(cca);
+})
 
 module.exports = router;

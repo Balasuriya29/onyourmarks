@@ -8,6 +8,7 @@ const config = require('config');
 //Importing Files
 const connection = require('./connection');
 const admin = require('./routes/admin');
+const student = require('./routes/student');
 
 //Connection to MongoDB
 const connectionString = `mongodb+srv://${config.get('DBUserName')}:${config.get('DBPassword')}@cluster0.dfr13.mongodb.net/OnYourMarks?retryWrites=true&w=majority`;
@@ -37,6 +38,9 @@ if(app.get('env') === "development"){
 }
 
 app.use('/api/admin', admin);
+
+// Student router
+app.use('/api/student',student);
 
 //Default Route
 app.get("/", (req,res) => {

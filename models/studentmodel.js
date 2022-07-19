@@ -5,10 +5,14 @@ const Joi = require('joi');
 const subStudentSchema = new mongoose.Schema({
     subject_id:{ 
         type:mongoose.Schema.Types.ObjectId,
+        ref:'newSubject'
     },
     obtained : Number,
     total_marks : Number
 });
+
+//Defining Model
+const subSchemaModel = mongoose.model('newSubSchema',subStudentSchema);
 
 //Defining a studentSchema
 const studentSchema = new mongoose.Schema({
@@ -29,6 +33,7 @@ const studentSchema = new mongoose.Schema({
     bloodGroup: String,
     marks: [{
         type:subStudentSchema,
+        ref:'newSubSchema'
     }]
 });
 
