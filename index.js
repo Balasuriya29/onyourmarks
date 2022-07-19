@@ -8,6 +8,7 @@ const config = require('config');
 //Importing Files
 const connection = require('./connection');
 const admin = require('./routes/admin');
+const teacher = require('./routes/teacher')
 
 //Connection to MongoDB
 const connectionString = `mongodb+srv://${config.get('DBUserName')}:${config.get('DBPassword')}@cluster0.dfr13.mongodb.net/OnYourMarks?retryWrites=true&w=majority`;
@@ -23,10 +24,6 @@ app.use(mongoose_morgan({
  },{},
  'common'
 ));
-app.use(helmet());
-
-// console.log(app.get('env'));
-
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({
     collection: 'logs',
@@ -35,10 +32,8 @@ if(app.get('env') === "development"){
    'common'
   ));
 }
-
 app.use('/api/admin', admin);
-
-app.use('/api/admin', admin);
+app.use('/api/teacher', teacher);
 
 //Default Route
 app.get("/", (req,res) => {

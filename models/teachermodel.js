@@ -5,6 +5,7 @@ const Joi = require("joi");
 //Defining a teacherSchema
 const teacherSchema = new mongoose.Schema({
     name: String,
+    degree: String,
     std: String,
     dob: Date,
     gender: String,
@@ -24,6 +25,7 @@ const Teacher = mongoose.model('newTeacher', teacherSchema, 'teacher');
 function validateTeacher(teacher) {
     const tempschema = Joi.object({
         name: Joi.string().required(),
+        degree:Joi.required(),
         std: Joi.string().required(),
         dob: Joi.date().required(),
         gender: Joi.string().required(),

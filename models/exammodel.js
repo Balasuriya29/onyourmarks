@@ -11,7 +11,8 @@ const examSchema = new mongoose.Schema({
     }],
     marks:[
         Number
-    ]
+    ],
+    std: String
 });
 
 //Creating a Model
@@ -22,7 +23,8 @@ function validateExam(exam) {
     const tempschema = Joi.object({
         exam_name: Joi.string().required(),
         subjects: Joi.array().required(),
-        marks:Joi.array().required()
+        marks:Joi.array().required(),
+        std: Joi.required()
     });
 
     return tempschema.validate(exam);
