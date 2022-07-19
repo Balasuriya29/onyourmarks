@@ -9,6 +9,7 @@ const config = require('config');
 const connection = require('./connection');
 const admin = require('./routes/admin');
 const teacher = require('./routes/teacher')
+const student = require('./routes/student');
 
 //Connection to MongoDB
 const connectionString = `mongodb+srv://${config.get('DBUserName')}:${config.get('DBPassword')}@cluster0.dfr13.mongodb.net/OnYourMarks?retryWrites=true&w=majority`;

@@ -1,17 +1,16 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const { valid } = require('joi');
 
 //Defining a adminSchema
 const subjectSchema = new mongoose.Schema({
     sub_name : String,
     teachers:[{
             type:mongoose.Schema.Types.ObjectId,
-            ref:'teacher'
+            ref:'newTeacher'
         }],
     students:[{
             type:mongoose.Schema.Types.ObjectId,
-            ref:'student',
+            ref:'newStudent',
         }]
 });
 
