@@ -11,6 +11,9 @@ const admin = require('./routes/admin');
 const teacher = require('./routes/teacher')
 const student = require('./routes/student');
 
+//Verifiy for jwtPrivateKey
+
+
 //Connection to MongoDB
 const connectionString = `mongodb+srv://${config.get('DBUserName')}:${config.get('DBPassword')}@cluster0.dfr13.mongodb.net/OnYourMarks?retryWrites=true&w=majority`;
 connection.connectDB(connectionString,"OnYourMarks");
@@ -35,6 +38,7 @@ if(app.get('env') === "development"){
 }
 app.use('/api/admin', admin);
 app.use('/api/teacher', teacher);
+app.use('/api/student', student);
 
 //Default Route
 app.get("/", (req,res) => {
