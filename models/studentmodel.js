@@ -34,7 +34,17 @@ const studentSchema = new mongoose.Schema({
     marks: [{
         type:subStudentSchema,
         ref:'newSubSchema'
-    }]
+    }],
+    cca: {
+        winner : {
+            type:Number,
+            default : 0
+        },
+        participated : {
+            type:Number,
+            default : 0
+        }
+    }
 });
 
 
