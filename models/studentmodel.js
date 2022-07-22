@@ -1,24 +1,33 @@
 //Required Packages
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const jwt = require('jsonwebtoken');
 
-const subStudentSchema = new mongoose.Schema({
-    subject_id:{ 
+//Defining SubSchemas
+const subStudentExamSchema = new mongoose.Schema({
+    exam_id:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'newSubject'
+        ref:"newExam"
     },
-    obtained : Number,
-    total_marks : Number
+    mark: [{
+        subject_id:{ 
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'newSubject'
+        },
+        obtained : Number,
+        total_marks : Number
+    }]
 });
 
 //Defining Model
-const subSchemaModel = mongoose.model('newSubSchema',subStudentSchema);
+const subSchemaModel = mongoose.model('newSubSchema',subStudentExamSchema);
 
 //Defining a studentSchema
 const studentSchema = new mongoose.Schema({
     name: String,
     roll_no: String,
     std: String,
+    section: String,
     dob: Date,
     gender: String,
     parent1name: String,
@@ -32,7 +41,7 @@ const studentSchema = new mongoose.Schema({
     motherTongue: String,
     bloodGroup: String,
     marks: [{
-        type:subStudentSchema,
+        type:subStudentExamSchema,
         ref:'newSubSchema'
     }],
     cca: {
@@ -47,7 +56,6 @@ const studentSchema = new mongoose.Schema({
     }
 });
 
-
 //Creating a Model
 const Student = mongoose.model('newStudent', studentSchema, 'student');
 
@@ -57,6 +65,7 @@ function validateStudent(student) {
         name: Joi.string().required(),
         roll_no:Joi.required(),
         std: Joi.string().required(),
+        section: Joi.required(),
         dob: Joi.date().required(),
         gender: Joi.string().required(),
         parent1name: Joi.string().required(),
@@ -73,6 +82,13 @@ function validateStudent(student) {
     });
     return tempschema.validate(student);
 }
+
+//Method for Token Generation
+studentSchema.methods.generateAuthToken = function() {
+    const token = jwt.sign({_id : this._id, role: "Student"}, config.get('jwtPrivateKey'));
+    return token;
+}
+
 
 module.exports.Student = Student;
 module.exports.validateStudent = validateStudent;

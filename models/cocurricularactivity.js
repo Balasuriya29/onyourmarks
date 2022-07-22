@@ -17,7 +17,7 @@ const schema = mongoose.Schema({
 
 const coCurricularActivity = mongoose.model('newCCA',schema,'StudentCCA');
 
-function validateSchema(cca){
+function validateCoCurricularActivity(cca){
     const tempSchema = Joi.object({
         activity_name : Joi.required(),
         activity_type : Joi.required(),
@@ -31,4 +31,4 @@ function validateSchema(cca){
 }
 
 module.exports.coCurricularActivity = coCurricularActivity;
-module.exports.validateSchema = validateSchema;
+module.exports.validateCoCurricularActivity = validateCoCurricularActivity;
