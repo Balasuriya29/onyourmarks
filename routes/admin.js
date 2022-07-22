@@ -8,7 +8,6 @@ const teacherModel = require('../models/teachermodel');
 const examModel = require('../models/exammodel');
 const subjectModel = require('../models/subjectmodel');
 const cocurricularactivity = require('../models/cocurricularactivity');
-const { ObjectID } = require('mongodb');
 
 //Functions
 async function isNotValidId(Model,id) {
@@ -22,7 +21,6 @@ async function isNotValidId(Model,id) {
     }
     return doc === null;
 }
-
 
 //POST APIs
 router.post("/add-student",async (req, res)=>{

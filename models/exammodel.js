@@ -9,10 +9,6 @@ const examSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'subject'
     }],
-    marks:[
-        Number
-    ],
-    std: String
 });
 
 //Creating a Model

@@ -3,30 +3,10 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 
-//Defining SubSchemas
-const subStudentExamSchema = new mongoose.Schema({
-    exam_id:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"newExam"
-    },
-    mark: [{
-        subject_id:{ 
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'newSubject'
-        },
-        obtained : Number,
-        total_marks : Number
-    }]
-});
-
-//Defining Model
-const subSchemaModel = mongoose.model('newSubSchema',subStudentExamSchema);
-
 //Defining a studentSchema
 const studentSchema = new mongoose.Schema({
     name: String,
     roll_no: String,
-    std: String,
     section: String,
     dob: Date,
     gender: String,
@@ -40,10 +20,6 @@ const studentSchema = new mongoose.Schema({
     permanentAddress: String,
     motherTongue: String,
     bloodGroup: String,
-    marks: [{
-        type:subStudentExamSchema,
-        ref:'newSubSchema'
-    }],
 });
 
 //Creating a Model
@@ -54,7 +30,6 @@ function validateStudent(student) {
     const tempschema = Joi.object({
         name: Joi.string().required(),
         roll_no:Joi.required(),
-        std: Joi.string().required(),
         section: Joi.required(),
         dob: Joi.date().required(),
         gender: Joi.string().required(),
@@ -68,7 +43,6 @@ function validateStudent(student) {
         permanentAddress: Joi.string().required(),
         motherTongue: Joi.string().required(),
         bloodGroup: Joi.string().required(),
-        marks: Joi.required(),
     });
     return tempschema.validate(student);
 }

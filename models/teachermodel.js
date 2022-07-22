@@ -6,10 +6,6 @@ const Joi = require("joi");
 const teacherSchema = new mongoose.Schema({
     name: String,
     degree: String,
-    std: {
-        type:Map,
-        of: [String]
-    },
     dob: Date,
     gender: String,
     email: String,
@@ -30,7 +26,6 @@ function validateTeacher(teacher) {
     const tempschema = Joi.object({
         name: Joi.string().required(),
         degree:Joi.required(),
-        std: Joi.required(),
         dob: Joi.date().required(),
         gender: Joi.string().required(),
         email: Joi.string().required(),
