@@ -7,7 +7,10 @@ const jwt = require('jsonwebtoken');
 const studentSchema = new mongoose.Schema({
     name: String,
     roll_no: String,
-    section: String,
+    std_id: {
+        type: mongoose.Types.ObjectId,
+        ref: newStandard
+    },
     dob: Date,
     gender: String,
     parent1name: String,
@@ -30,7 +33,7 @@ function validateStudent(student) {
     const tempschema = Joi.object({
         name: Joi.string().required(),
         roll_no:Joi.required(),
-        section: Joi.required(),
+        std_id: Joi.required(),
         dob: Joi.date().required(),
         gender: Joi.string().required(),
         parent1name: Joi.string().required(),

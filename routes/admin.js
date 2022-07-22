@@ -55,23 +55,9 @@ router.post("/add-exam", async (req,res) => {
 
     await exam.save(async (err, doc) => {
         if(err) res.send(err.message);
-        await studentModel.Student.updateMany(
-            {
-                std: req.body.std
-            },
-            {
-                $push:{
-                    marks:{
-                        exam_id:doc._id,
-                        mark: []
-                    }
-                }
-            }
-        )
-
         res.send(doc);
     })
-})
+});
 
 router.post("/add-subject",async (req,res)=>{
     const {error} = subjectModel.validateSubject(req.body);
@@ -101,30 +87,30 @@ router.put('/update-teacher/:id', async (req,res) => {
     res.status(200).send(teacherToBeUpdated);
 });
 
-router.put('/update-teacher-std/:id', async (req,res) => {
-    var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
-    if(isValid) return res.send("Teacher ID is Invalid");
+// router.put('/update-teacher-std/:id', async (req,res) => {
+//     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
+//     if(isValid) return res.send("Teacher ID is Invalid");
 
-    const teacherToBeUpdated = await teacherModel.Teacher.findById(req.params.id);
+//     const teacherToBeUpdated = await teacherModel.Teacher.findById(req.params.id);
 
-    var arrays = teacherToBeUpdated.std.get(req.body.std);
+//     var arrays = teacherToBeUpdated.std.get(req.body.std);
 
-    if(arrays === undefined){
-        arrays = new Array(0);
-    }
+//     if(arrays === undefined){
+//         arrays = new Array(0);
+//     }
 
-    if(!arrays.includes(req.body.section)){
-        arrays.push(req.body.section);
-        teacherToBeUpdated.std.set(req.body.std, arrays);
-    }
+//     if(!arrays.includes(req.body.section)){
+//         arrays.push(req.body.section);
+//         teacherToBeUpdated.std.set(req.body.std, arrays);
+//     }
 
-    teacherToBeUpdated.save().then((v) => {
-        res.status(200).send(v);
-    })
-});
+//     teacherToBeUpdated.save().then((v) => {
+//         res.status(200).send(v);
+//     })
+// });
 
 router.put('/update-student', async (req,res) => {
-    var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
+    var isValid = (await isNotValidId(studentModel.Student,req.params.id)).valueOf();
     if(isValid) return res.send("Student ID is Invalid");
 
     const studentToBeUpdated = await studentModel.Student.findOneAndUpdate(
@@ -139,17 +125,12 @@ router.put('/update-student', async (req,res) => {
 });
 
 router.put('/update-subject/:id', async (req,res) => {
-    var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
+    var isValid = (await isNotValidId(subjectModel.Subject,req.params.id)).valueOf();
     if(isValid) return res.send("Subject ID is Invalid");
 
     const subjectToBeUpdated = await subjectModel.Subject.findOneAndUpdate(
         req.params.id,
-        {
-            $push:{
-                students: req.body.students,
-                teachers: req.body.teachers
-            }
-        },
+        req.body,
         {
             new: true,
         }

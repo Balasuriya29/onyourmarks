@@ -9,6 +9,7 @@ const examSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'subject'
     }],
+    status: String
 });
 
 //Creating a Model
@@ -19,8 +20,7 @@ function validateExam(exam) {
     const tempschema = Joi.object({
         exam_name: Joi.string().required(),
         subjects: Joi.array().required(),
-        marks:Joi.array().required(),
-        std: Joi.required()
+        status:Joi.string().required(),
     });
 
     return tempschema.validate(exam);
