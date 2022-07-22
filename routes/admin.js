@@ -139,6 +139,40 @@ router.put('/update-subject/:id', async (req,res) => {
     res.status(200).send(subjectToBeUpdated);
 });
 
+router.put('/activity/:id',async (req,res)=>{
+    const value = req.body.isVerified;
+    const activity = await cocurricularactivity.coCurricularActivity.findById(req.params.id);
+    console.log(activity);
+    if(value === "accepted"){
+        console.log('accepted');
+        if(activity['status'] === 'participated'){
+            console.log(activity['status']);
+        await studentModel.Student.findByIdAndUpdate(activity['student_id'],{
+                $inc : {
+                    "cca.participated":1
+                }
+        })
+        }
+        else{
+            await studentModel.Student.findByIdAndUpdate(activity['student_id'],{
+                $inc : {
+                    "cca.winner":1
+                }
+            })
+        }
+    }
+    await cocurricularactivity.coCurricularActivity.findOneAndUpdate(
+        {_id:req.params.id},
+        {isVerified : req.body.isVerified}).then((v)=>{
+            res.status(200).send("Activity updated");
+        }
+        ).catch((err)=>{
+            res.send(err.message);
+        })
+})
+
+
+
 //GET APIs
 router.get('/get-teacher/:id',async (req,res)=>{
     try{
@@ -167,9 +201,12 @@ router.get('/get-student/:roll_no',async (req,res)=>{
 });
 
 router.get('/get-cca/:condition', async(req,res)=>{
-    var condition = false;
-    if(req.params.condition === "true"){
-        condition = true;
+    var condition = "pending";
+    if(req.params.condition === "accepted"){
+        condition = "accepted";
+    }
+    else if(req.params.condition === "rejected"){
+        condition = "rejected";
     }
     const cca = await cocurricularactivity.coCurricularActivity
             .find({isVerified:condition})

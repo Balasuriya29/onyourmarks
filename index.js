@@ -38,7 +38,8 @@ if(app.get('env') === "development"){
 }
 app.use('/api/admin', admin);
 app.use('/api/teacher', teacher);
-app.use('/api/student', student);
+app.use('/api/student',student);
+
 
 //Default Route
 app.get("/", (req,res) => {

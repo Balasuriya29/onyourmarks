@@ -8,7 +8,7 @@ const schema = mongoose.Schema({
     status:String,
     startDate:Date,
     endDate:Date,
-    isVerified:Boolean,
+    isVerified:String,
     student_id:{
         type : mongoose.Schema.Types.ObjectId,
         ref : 'newStudent'
@@ -24,7 +24,7 @@ function validateCoCurricularActivity(cca){
         status : Joi.required(),
         startDate : Joi.date().required(),
         endDate : Joi.date().required(),
-        isVerified : Joi.boolean().required(),
+        isVerified : Joi.required(),
         student_id : Joi.required()
     });
     return tempSchema.validate(cca);
