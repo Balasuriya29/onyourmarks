@@ -4,64 +4,34 @@ const router = express.Router();
 
 //Required Modules
 const studentModel = require('../models/studentmodel');
-const teacherModel = require('../models/teachermodel');
+const marksModel = require('../models/marksmodel');
 
-//UPDATE APIs - Needs Modification
-// router.put('/update-teacher-std/:id', async (req,res) => {
-//     if(isValidId(teacherModel.Teacher,req.params.id)) return res.send("Teacher ID is Invalid");
-    
-
-//     const teacherToBeUpdated = await teacherModel.Teacher.findOneAndUpdate(
-//         req.params.id,
-//         {
-//             $push:{
-//                 marks: {
-//                     $push:{
-//                         mark: req.body.mark
-//                     }
-//                 }
-//             }
-//         },
-//         {
-//             new: true,
-//         }
-//     );
-
-//     res.status(200).send(teacherToBeUpdated);
-// });
-
-router.put('/update-marks/:id', async (req, res) => {
-    const marksToBeUpdated = await studentModel.Student.findOneAndUpdate(
-        req.params.id,
-        {
-            $push:{
-                marks : req.body.marks,
-            }
-        },
-        {
-            new: true
-        }
-    );
-
-    res.send(marksToBeUpdated).status(200);
+//POST APIs 
+router.post('/marks/:id', async (req, res) => {
+    const {error} = marksModel.validateMark(req.body);
+    if(error) return res.send(error.details[0].message);
+    await marksModel.markmodel(req.body)
+    .then((v)=>{
+        res.send(v).status(200);
+    })
+    .catch((err)=>{
+        res.send(err.message);
+    })
 });
 
 //GET APIs
-router.get('/show-my-students/:id', async (req,res) => {
-    const teacher = await teacherModel.Teacher.findById(req.params.id);
-    const myClassNumber = teacher['std'];
-    await studentModel.Student.find(
-        {
-            std: {
-                $in: myClassNumber
-            }
-        }
-    ).then((v) => {
-        res.status(200).send(v);
+router.get('/mystudents/:std_id', async (req,res) => {
+    await studentModel.Student.find({
+        std_id : req.params.std_id
     })
-    .catch((err) => {
-        res.status(400).send("Error:" +err.message);
+    .populate('std_id',['std_name'])
+    .then((v)=>{
+        res.send(v);
     })
+    .catch((err)=>{
+        res.send(err.message);
+    })
+
 });
 
 module.exports = router;
