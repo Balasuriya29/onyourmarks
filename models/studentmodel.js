@@ -9,7 +9,7 @@ const studentSchema = new mongoose.Schema({
     roll_no: String,
     std_id: {
         type: mongoose.Types.ObjectId,
-        ref: "newStandard"
+        ref: 'newStandard'
     },
     dob: Date,
     gender: String,

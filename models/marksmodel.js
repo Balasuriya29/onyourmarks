@@ -32,5 +32,5 @@ function validateMark(mark){
     return tempSchema.validate(mark);
 }
 
-module.exports.markSchema = markSchema;
+module.exports.markmodel = markmodel;
 module.exports.validateMark = validateMark;

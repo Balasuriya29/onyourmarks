@@ -5,12 +5,12 @@ const mongoose = require('mongoose');
 
 // Importing modules
 const coCurricularActivity = require('../models/cocurricularactivity');
-const teacher = require('../models/teachermodel');
-const student = require('../models/studentmodel');
+const student_teacher_relation =  require('../models/student-teacher-relation');
+const exam_std_relation = require('../models/exam-std-relation');
 
 
 //GET APIs
-router.get('/get-my-cca/:id/:condition', async(req,res)=>{
+router.get('/mycca/:id/:condition', async(req,res)=>{
     await coCurricularActivity.coCurricularActivity.find ({
         student_id : mongoose.Types.ObjectId(req.params.id),
         isVerified : req.params.condition
@@ -19,23 +19,43 @@ router.get('/get-my-cca/:id/:condition', async(req,res)=>{
     });
 });
 
-router.get('/get-my-teachers/:std', async(req,res)=>{
-    await teacher.Teacher.find({
-        std : {
-            $in : req.params.std
-        }
-    }).then((v)=>{
+router.get('/myteachers/:std_id', async(req,res)=>{
+    await student_teacher_relation.studentTeacherRelationModel
+    .find({
+        std_id : req.params.std_id
+    })
+    .populate('teacher_id',['name'])
+    .populate('subject_id',['sub_name', 'total_marks'])
+    .then((v)=>{
         res.send(v);
     }).catch((err)=>{
         res.send(err.message);
-    })
+    });
+    
+    
 })
 
-const studentModel = require('../models/studentmodel');
-const examModel = require('../models/exammodel');
+router.get('/myexams/:std_id', async(req,res) => {
+    await exam_std_relation.examStandardModel.find({
+        std_id : req.params.std_id
+    })
+    .populate({
+        path : 'exam_id',
+        populate : {
+            path : 'subjects'
+        }
+    })
+    .then((v) => {
+        res.status(200).send(v);
+    })
+    .catch((err) => {
+        res.status(400).send(`Error: ${err.message}`);
+    })
+
+});
 
 //POST APIs
-router.post('/add-cca', async (req,res)=>{
+router.post('/cca', async (req,res)=>{
     const {error} = coCurricularActivityModel.validateCoCurricularActivity(req.body);
     if(error) return res.send(error.message);
 
@@ -47,7 +67,7 @@ router.post('/add-cca', async (req,res)=>{
 });
 
 //DELETE APIs
-router.delete('/delete-cca/:id', async (req,res)=>{
+router.delete('/cca/:id', async (req,res)=>{
     await coCurricularActivity.coCurricularActivity.findByIdAndDelete(req.params.id)
         .then((v)=>{
             res.send(v);
@@ -58,36 +78,6 @@ router.delete('/delete-cca/:id', async (req,res)=>{
 });
 
 
-router.put('/temp/update', async(req,res)=>{
-    await student.Student.updateMany({
-        cca: {
-            winner : 0 ,
-            participated : 0
-        }
-    }).then((v)=>{
-        res.send('success');
-    })
-})
-
-
-//GET APIs
-router.get('/get-my-exams/:roll_no', async(req,res) => {
-    const student = await studentModel.Student.find({
-        roll_no : req.params.roll_no
-    });
-    const myClassNumber = student[0]['std'];
-    await examModel.Exam.find(
-        {
-            std:myClassNumber
-        }
-    ).then((v) => {
-        res.status(200).send(v);
-    })
-    .catch((err) => {
-        res.status(400).send(`Error: ${err.message}`);
-    })
-
-});
 
 
 module.exports = router;
