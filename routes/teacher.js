@@ -5,6 +5,7 @@ const router = express.Router();
 //Required Modules
 const studentModel = require('../models/studentmodel');
 const marksModel = require('../models/marksmodel');
+const studentTeacherRelation = require('../models/student-teacher-relation');
 
 //POST APIs 
 router.post('/marks/:id', async (req, res) => {
@@ -20,17 +21,23 @@ router.post('/marks/:id', async (req, res) => {
 });
 
 //GET APIs
-router.get('/mystudents/:std_id', async (req,res) => {
-    await studentModel.Student.find({
-        std_id : req.params.std_id
-    })
-    .populate('std_id',['std_name'])
-    .then((v)=>{
-        res.send(v);
-    })
-    .catch((err)=>{
-        res.send(err.message);
-    })
+router.get('/mystudents/:id', async (req,res) => {
+    const standard = [];
+    const teacher = await studentTeacherRelation.studentTeacherRelationModel.find({
+                        teacher_id:req.params.id,
+                    });
+
+    res.send(teacher);
+    // await studentModel.Student.find({
+    //     std_id : standard
+    // })
+    // .populate('std_id',['std_name'])
+    // .then((v)=>{
+    //     res.send(v);
+    // })
+    // .catch((err)=>{
+    //     res.send(err.message);
+    // })
 
 });
 
