@@ -21,6 +21,7 @@ function validateExam(exam) {
         exam_name: Joi.string().required(),
         subjects: Joi.array().required(),
         status:Joi.string().required(),
+        std_id : Joi.required(),
     });
 
     return tempschema.validate(exam);

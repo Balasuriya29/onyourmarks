@@ -6,7 +6,10 @@ const examStandardSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'newExam'
     },
-    std : String,
+    std :{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'newStandard'
+    },
 });
 
 const examStandardModel = mongoose.model('newExamStandard',examStandardSchema,'examstandard');
@@ -14,7 +17,7 @@ const examStandardModel = mongoose.model('newExamStandard',examStandardSchema,'e
 function validateSchema(examStandard){
     const tempSchema = Joi.object({
         exam_id : Joi.required(),
-        std : Joi.string()
+        std : Joi.required()
     });
 
     return tempSchema.validate(examStandard);

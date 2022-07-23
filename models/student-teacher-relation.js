@@ -10,7 +10,7 @@ const student_teacher_relation_schema = new mongoose.Schema({
     },
     subject_id : {
         type: mongoose.Types.ObjectId,
-        ref:"newSuject",
+        ref:"newSubject",
     },
     std_id: {
         type: mongoose.Types.ObjectId,

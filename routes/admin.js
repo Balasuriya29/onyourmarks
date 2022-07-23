@@ -80,14 +80,17 @@ router.post("/exam", async (req,res) => {
     await exam.save(async (err, doc1) => {
         if(err) res.send(err.message);
         const examstandard = exam_std_relation.examStandardModel({
-            exam_id : doc._id,
-            std_id : req.body.std_id
+            exam_id : doc1._id,
+            std : req.body.std_id
         });
         await examstandard.save((err,doc2)=>{
             if(err) return res.send(err.message);
-            doc1['exam-std-relation'] = doc2;
+            res.send(doc1+"\n"+doc2);
+            /*console.log(doc1);
+            // console.log(doc2);*/
         });
-        res.send(doc1);
+        // console.log(doc1);
+        // console.log(doc2);
     })
 });
 
@@ -119,10 +122,26 @@ router.put('/teacher-details/:id', async (req,res) => {
 });
 
 router.put('/teacher-standard-change/:id',async (req,res)=>{
+    var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
+    if(isValid) return res.send("Teacher ID is Invalid");
     await student_teacher_relation.studentTeacherRelationModel.deleteOne({
-        subject_id : req.body.subject_id,
-        std_id : req.body.std_id,
+        subject_id : req.body.old_subject_id,
+        std_id : req.body.old_std_id,
     });
+    const updatedTeacher = await student_teacher_relation.studentTeacherRelationModel({
+        teacher_id : req.params.id,
+        subject_id : req.body.subject_id,
+        std_id : req.body.std_id
+    });
+    await updatedTeacher
+    .save()
+    .then((v)=>{
+        res.send(v).status(200);
+    })
+    .catch((err)=>{
+        res.send(err.message);
+    })
+    ;
 })
 
 router.put('/student', async (req,res) => {
@@ -185,7 +204,21 @@ router.put('/activity/:id',async (req,res)=>{
         ).catch((err)=>{
             res.send(err.message);
         })
-})
+});
+
+router.put('/standard/:id', async (req,res)=>{
+    const standard = await standardModel.standardModel.findById(req.params.id);
+    standard.std_name = req.body.std_name;
+    standard.subject_id.push(...req.body.subject_id);
+    standard
+    .save()
+    .then((v)=>{
+        res.send(v).status(200);
+    })
+    .catch((err)=>{
+        res.send(err.message);
+    });
+});
 
 
 
@@ -217,7 +250,7 @@ router.get('/student/:roll_no',async (req,res)=>{
     }
     catch(err){
         console.log(err);
-        res.status(400).send(err);
+        res.status(404).send(err);
     }
 });
 
@@ -237,29 +270,28 @@ router.get('/cca/:condition', async(req,res)=>{
 
 router.get('/teachers/unassigned', async(req,res)=>{
     await subjectModel.Subject.find({
-        teacher_id : null
+        teacher : null
     })
     .then((v)=>{
         res.send(v).status(200);
     })
     .catch((err)=>{
-        res.send(err.message);
+        res.send(err.message).status(404);
     })
 })
 
 //DELETE APIs
 router.delete("/student/:id",async (req,res)=>{
-    await studentModel.Student.deleteOne({
-        roll_no : req.params.id
-    }).then((v)=>res.send("Successfully deleted"))
-    .catch((err)=>res.send(err.message));
+    await studentModel.Student.findByIdAndDelete(req.params.id)
+    .then((v)=>res.send("Successfully deleted"))
+    .catch((err)=>res.send(err.message).status(404));
 });
 
 router.delete("/subject/:id",async (req,res)=>{
     await subjectModel.Subject.deleteOne({
         _id: req.params.id
     }).then((v)=>res.send("Successfully deleted"))
-        .catch((err)=>res.send(err));
+        .catch((err)=>res.send(err).status(404));
 })
 
 router.delete("/teacher/:id",async (req,res)=>{
@@ -270,14 +302,20 @@ router.delete("/teacher/:id",async (req,res)=>{
             teacher_id : req.params.id
         })
     })
-        .catch((err)=>res.send(err));
+        .catch((err)=>res.send(err).status(404));
 })
 
 router.delete("/exam/:id",async (req,res)=>{
     await examModel.Exam.deleteOne({
         _id: req.params.id
-    }).then((v)=>res.send("Successfully deleted"))
-        .catch((err)=>res.send(err));
+    }).then(async (v)=>{
+        await exam_std_relation.examStandardModel.deleteOne({
+            exam_id : req.params.id
+        }).then((v)=>{
+            res.send("Exam deleted successfully");
+        })
+    })
+    .catch((err)=>res.send(err).status(404));
 })
 
 module.exports = router;
