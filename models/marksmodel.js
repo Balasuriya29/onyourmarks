@@ -6,7 +6,7 @@ const Joi = require('joi');
 const markSchema = new mongoose.Schema({
     student_id:{
         type: mongoose.Types.ObjectId,
-        ref: newStudent
+        ref: "newStudent"
     },
     exam_id:{
         type:mongoose.Schema.Types.ObjectId,

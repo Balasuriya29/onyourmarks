@@ -6,15 +6,15 @@ const Joi = require('joi');
 const student_teacher_relation_schema = new mongoose.Schema({
     teacher_id : {
         type: mongoose.Types.ObjectId,
-        ref:newTeacher,
+        ref:"newTeacher",
     },
     subject_id : {
         type: mongoose.Types.ObjectId,
-        ref:newSuject,
+        ref:"newSuject",
     },
     std_id: {
         type: mongoose.Types.ObjectId,
-        ref:newStandard,
+        ref:"newStandard",
     }
 });
 
