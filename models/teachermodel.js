@@ -35,6 +35,7 @@ function validateTeacher(teacher) {
         motherTongue: Joi.string().required(),
         bloodGroup: Joi.string().required(),
         salary: Joi.required(),
+        status: Joi.required()
     });
 
     return tempschema.validate(teacher);

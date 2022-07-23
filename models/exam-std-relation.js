@@ -3,8 +3,8 @@ const Joi = require('joi');
 
 const examStandardSchema = new mongoose.Schema({
     exam_id : {
-        type : mongoose.Schema.Types.ObjectId(),
-        ref : 'newExam',
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'newExam'
     },
     std : String,
 });

@@ -17,7 +17,6 @@ const Subject = mongoose.model('newSubject',subjectSchema,'subject');
 function validateSubject(subject){
     const subjectJoiSchema=Joi.object({
         sub_name:Joi.string().required(),
-        teacher:Joi.required(),
         total_marks:Joi.required()
     });
     return subjectJoiSchema.validate(subject);

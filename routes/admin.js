@@ -10,6 +10,7 @@ const subjectModel = require('../models/subjectmodel');
 const cocurricularactivity = require('../models/cocurricularactivity');
 const exam_std_relation = require('../models/exam-std-relation');
 const student_teacher_relation = require('../models/student-teacher-relation');
+const standardModel = require('../models/standard');
 
 //Functions
 async function isNotValidId(Model,id) {
@@ -46,7 +47,7 @@ router.post("/teacher",async (req, res)=>{
     await teacher.save(async (err,doc1)=>{
         if(err) return res.send(err.message);
         const studentTeacher = await student_teacher_relation.studentTeacherRelationModel({
-            teacher_id : doc._id,
+            teacher_id : doc1._id,
             subject_id : req.body.subject_id,
             std_id : req.body.std_id,
         });
@@ -55,6 +56,18 @@ router.post("/teacher",async (req, res)=>{
             doc1['std-tea-relation'] = doc2; 
         });
         res.send(doc1);
+    })
+});
+
+router.post("/standard",async (req, res)=>{
+    const {error} = standardModel.validateStandardSchema(req.body);
+    if(error) return res.status(404).send(error.details[0].message);
+
+    const standard = new standardModel.standardModel(req.body);
+
+    await standard.save(async (err,doc)=>{
+        if(err) return res.send(err.message);
+        res.send(doc);
     })
 });
 
@@ -84,7 +97,7 @@ router.post("/subject",async (req,res)=>{
 
     const subject = new subjectModel.Subject(req.body);
 
-    const result = await subject.save()
+    await subject.save()
         .then((v)=>{
             res.status(200).send(v);
         });
@@ -252,7 +265,7 @@ router.delete("/subject/:id",async (req,res)=>{
 router.delete("/teacher/:id",async (req,res)=>{
     await teacherModel.Teacher.deleteOne({
         _id: req.params.id
-    }).then((v)=>{
+    }).then( async (v)=>{
         await student_teacher_relation.studentTeacherRelationModel.deleteMany({
             teacher_id : req.params.id
         })
