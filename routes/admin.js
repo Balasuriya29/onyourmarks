@@ -46,23 +46,27 @@ router.post("/teacher",async (req, res)=>{
 
     await teacher.save(async (err,doc1)=>{
         if(err) return res.send(err.message);
-        const studentTeacher = await student_teacher_relation.studentTeacherRelationModel({
-            teacher_id : doc1._id,
-            subject_id : req.body.subject_id,
-            std_id : req.body.std_id,
-        });
-        studentTeacher.save(async (err,doc2)=>{
-            if(err) return res.send(err.message);
-            await subjectModel.Subject.findByIdAndUpdate(
-                {
-                    _id : req.body.subject_id,
-                },
-                {
+        req.body.std_id.forEach(async element => {
+            const studentTeacher = await student_teacher_relation.studentTeacherRelationModel({
+                teacher_id : doc1._id,
+                subject_id : req.body.subject_id,
+                std_id : element,
+            });
+            studentTeacher.save(async (err,doc2)=>{
+                if(err) return res.send(err.message);
+            })
+        })
+
+        await subjectModel.Subject.findByIdAndUpdate(
+            {
+                _id : req.body.subject_id,
+            },
+            {
                     teacher : doc1._id,
-                }
-            );        
-            res.send(doc1+"\n"+doc2);
-        });
+            }
+        ).then((v) => {
+            res.send(doc1);
+        })       
     })
 });
 
@@ -87,8 +91,8 @@ router.post("/exam", async (req,res) => {
     await exam.save(async (err, doc1) => {
         if(err) res.send(err.message);
         const examstandard = exam_std_relation.examStandardModel({
-            exam_id : doc._id,
-            std_id : req.body.std_id
+            exam_id : doc1._id,
+            std : req.body.std_id
         });
         await examstandard.save((err,doc2)=>{
             if(err) return res.send(err.message);
@@ -122,7 +126,8 @@ router.post('/addStandardToTeacher/:id', async (req,res)=>{
     
     newTeacherStandard.save();
     res.send(newTeacherStandard);
-})
+});
+
 //UPDATE APIs✅
 router.put('/teacher-details/:id', async (req,res) => {
     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();

@@ -6,7 +6,10 @@ const examStandardSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'newExam'
     },
-    std : String,
+    std : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'newStandard'
+    },
 });
 
 const examStandardModel = mongoose.model('newExamStandard',examStandardSchema,'examstandard');
