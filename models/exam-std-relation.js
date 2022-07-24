@@ -17,7 +17,7 @@ const examStandardModel = mongoose.model('newExamStandard',examStandardSchema,'e
 function validateSchema(examStandard){
     const tempSchema = Joi.object({
         exam_id : Joi.required(),
-        std : Joi.string()
+        std : Joi.required()
     });
 
     return tempSchema.validate(examStandard);

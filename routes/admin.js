@@ -96,9 +96,8 @@ router.post("/exam", async (req,res) => {
         });
         await examstandard.save((err,doc2)=>{
             if(err) return res.send(err.message);
-            res.send(doc1);
+            res.send(doc1+"\n"+doc2);
         });
-
     })
 });
 
@@ -144,9 +143,24 @@ router.put('/teacher-details/:id', async (req,res) => {
 });
 
 router.put('/teacher-standard-change/:id',async (req,res)=>{
+    var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
+    if(isValid) return res.send("Teacher ID is Invalid");
     await student_teacher_relation.studentTeacherRelationModel.deleteOne({
+        subject_id : req.body.old_subject_id,
+        std_id : req.body.old_std_id,
+    });
+    const updatedTeacher = await student_teacher_relation.studentTeacherRelationModel({
+        teacher_id : req.params.id,
         subject_id : req.body.subject_id,
-        std_id : req.body.std_id,
+        std_id : req.body.std_id
+    });
+    await updatedTeacher
+    .save()
+    .then((v)=>{
+        res.send(v).status(200);
+    })
+    .catch((err)=>{
+        res.send(err.message);
     });
 })
 
@@ -170,22 +184,17 @@ router.put('/subject/:id', async (req,res) => {
     if(isValid) return res.send("Subject ID is Invalid");
 
     const subjectToBeUpdated = await subjectModel.Subject.findById(req.params.id)
-
-    subjectToBeUpdated.teacher = req.body.teacher;
-    const studentTeacher = await student_teacher_relation.studentTeacherRelationModel({
-        teacher_id : req.body.teacher,
-        subject_id : req.body.subject_id,
-        std_id : req.body.std_id,
-    });
-    studentTeacher.save(async (err,doc2)=>{
-        if(err) return res.send(err.message);
+    const studentTeacher = await student_teacher_relation.studentTeacherRelationModel.findById(req.body.subject_id);
     
+    subjectToBeUpdated.teacher = studentTeacher.teacher = req.body.teacher;
+
+    studentTeacher
+    .save()
+    .catch((err) => {
+        res.send(err.message).status(404);
     });
     subjectToBeUpdated
     .save()
-    .then((v)=>{
-        res.send(v).status(200)
-    })
     .catch((err) => {
         res.send(err.message).status(404);
     })
@@ -223,7 +232,21 @@ router.put('/activity/:id',async (req,res)=>{
         ).catch((err)=>{
             res.send(err.message);
         })
-})
+});
+
+router.put('/standard/:id', async (req,res)=>{
+    const standard = await standardModel.standardModel.findById(req.params.id);
+    standard.std_name = req.body.std_name;
+    standard.subject_id.push(...req.body.subject_id);
+    standard
+    .save()
+    .then((v)=>{
+        res.send(v).status(200);
+    })
+    .catch((err)=>{
+        res.send(err.message);
+    });
+});
 
 //GET APIs
 router.get('/teacher/:id',async (req,res)=>{
@@ -233,7 +256,7 @@ router.get('/teacher/:id',async (req,res)=>{
         res.send(teacher);
     }
     catch(err){
-        res.status(400).send("Invalid id");
+        res.status(404).send("Invalid id");
     }
 });
 
@@ -250,7 +273,7 @@ router.get('/student/:id',async (req,res)=>{
     }
     catch(err){
         console.log(err);
-        res.status(400).send(err);
+        res.status(404).send(err);
     }
 });
 
@@ -268,31 +291,30 @@ router.get('/cca/:condition', async(req,res)=>{
     res.send(cca);
 });
 
-router.get('/teachers/unassigned', async(req,res)=>{
+router.get('/subjects/unassigned', async(req,res)=>{
     await subjectModel.Subject.find({
-        teacher_id : null
+        teacher : null
     })
     .then((v)=>{
         res.send(v).status(200);
     })
     .catch((err)=>{
-        res.send(err.message);
+        res.send(err.message).status(404);
     })
 })
 
 //DELETE APIs
 router.delete("/student/:id",async (req,res)=>{
-    await studentModel.Student.deleteOne({
-        roll_no : req.params.id
-    }).then((v)=>res.send("Successfully deleted"))
-    .catch((err)=>res.send(err.message));
+    await studentModel.Student.findByIdAndDelete(req.params.id)
+    .then((v)=>res.send("Successfully deleted"))
+    .catch((err)=>res.send(err.message).status(404));
 });
 
 router.delete("/subject/:id",async (req,res)=>{
     await subjectModel.Subject.deleteOne({
         _id: req.params.id
     }).then((v)=>res.send("Successfully deleted"))
-        .catch((err)=>res.send(err));
+        .catch((err)=>res.send(err).status(404));
 })
 
 router.delete("/teacher/:id",async (req,res)=>{
@@ -305,23 +327,36 @@ router.delete("/teacher/:id",async (req,res)=>{
             new: true
         })
         .then(async (v) => {
-            await subjectModel.Subject.deleteMany({
-                teacher: req.params.id
-            });
+            await subjectModel.Subject.updateOne(
+                {
+                    teacher: req.params.id
+                },
+                {
+                    $unset:{
+                        teacher:""
+                    }
+                }
+            )
             await student_teacher_relation.studentTeacherRelationModel.deleteMany({
                 teacher_id : req.params.id
             });
 
             res.send(v).status(200);
         })
-        .catch((err)=>res.send(err));
-})
+        .catch((err)=>res.send(err).status(404));
+});
 
 router.delete("/exam/:id",async (req,res)=>{
     await examModel.Exam.deleteOne({
         _id: req.params.id
-    }).then((v)=>res.send("Successfully deleted"))
-        .catch((err)=>res.send(err));
+    }).then(async (v)=>{
+        await exam_std_relation.examStandardModel.deleteOne({
+            exam_id : req.params.id
+        }).then((v)=>{
+            res.send("Exam deleted successfully");
+        })
+    })
+    .catch((err)=>res.send(err).status(404));
 })
 
 module.exports = router;

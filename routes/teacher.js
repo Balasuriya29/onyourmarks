@@ -48,10 +48,6 @@ router.get('/mystudents/:id', async (req,res) => {
         standard.push(students);
     }
     res.send(standard);
-    // .then((v)=>{
-    //     res.send(v);
-    // })
-
 });
 
 module.exports = router;
