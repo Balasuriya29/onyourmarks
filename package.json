@@ -1,10 +1,10 @@
 {
   "name": "on-your-marks",
-  "start":"node index.js",
   "version": "1.0.0",
   "description": "SIH-2022",
   "main": "index.js",
   "scripts": {
+    "start":"node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
