@@ -9,7 +9,7 @@ const standardSchema = new mongoose.Schema({
     std_name : String
 });
 
-const standardSchemaModel = mongoose.model('newStandard',standardSchema,'standard');
+const standardModel = mongoose.model('newStandard',standardSchema,'standard');
 
 function validateStandardSchema(standard){
     const tempSchema = Joi.object({
@@ -20,5 +20,5 @@ function validateStandardSchema(standard){
     return tempSchema.validate(standard);
 }
 
-module.exports.standardSchemaModel = standardSchemaModel;
+module.exports.standardModel = standardModel;
 module.exports.validateStandardSchema = validateStandardSchema;

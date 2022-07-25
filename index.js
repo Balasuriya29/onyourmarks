@@ -22,12 +22,7 @@ connection.connectDB(connectionString,"OnYourMarks");
 const app = express();
 app.use(express.json());
 app.use(helmet())
-app.use(mongoose_morgan({
-  collection: 'logs',
-  connectionString: connectionString,
- },{},
- 'common'
-));
+
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({
     collection: 'logs',

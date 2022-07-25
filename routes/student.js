@@ -42,7 +42,7 @@ router.get('/myexams/:std_id', async(req,res) => {
     .populate({
         path : 'exam_id',
         populate : {
-            path : 'subjects'
+            path : 'subjects',
         }
     })
     .then((v) => {
@@ -56,10 +56,10 @@ router.get('/myexams/:std_id', async(req,res) => {
 
 //POST APIs
 router.post('/cca', async (req,res)=>{
-    const {error} = coCurricularActivityModel.validateCoCurricularActivity(req.body);
+    const {error} = coCurricularActivity.validateCoCurricularActivity(req.body);
     if(error) return res.send(error.message);
 
-    const ccaModel = coCurricularActivityModel.coCurricularActivity(req.body);
+    const ccaModel = coCurricularActivity.coCurricularActivity(req.body);
     await ccaModel.save().then((v)=>{
         res.status(200).send(v);
     });

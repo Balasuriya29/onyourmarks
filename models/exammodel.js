@@ -7,8 +7,9 @@ const examSchema = new mongoose.Schema({
     exam_name: String,
     subjects:[{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'subject'
+        ref:'newSubject'
     }],
+    dates:[Date],
     status: String
 });
 
@@ -21,6 +22,8 @@ function validateExam(exam) {
         exam_name: Joi.string().required(),
         subjects: Joi.array().required(),
         status:Joi.string().required(),
+        dates:Joi.array().required(),
+        std_id:Joi.required()
     });
 
     return tempschema.validate(exam);
