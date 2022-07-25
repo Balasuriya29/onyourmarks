@@ -39,12 +39,14 @@ if(app.get('env') === "development"){
    'common'
   ));
 }
+
 app.use('/api/admin', admin);
 app.use('/api/teacher', teacher);
 app.use('/api/student',student);
 
 
 //Default Route
+app.options('/', cors()) 
 app.get("/", (req,res) => {
     res.status(200).send("Everything is Working Perfectly!!!");
 });
