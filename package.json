@@ -1,6 +1,7 @@
 {
   "name": "on-your-marks",
   "version": "1.0.0",
+  "start": "node index.js",
   "description": "SIH-2022",
   "main": "index.js",
   "scripts": {
