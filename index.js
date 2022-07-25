@@ -24,7 +24,7 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 var corsOption = {
-  origin: "*",
+  origin: ["http://localhost:54202/"],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: 'Content-Type,Authorization,x-auth-token',
@@ -46,7 +46,6 @@ app.use('/api/student',student);
 
 
 //Default Route
-
 app.get("/", cors(corsOption), (req,res) => {
     res.status(200).send("Everything is Working Perfectly!!!");
 });
