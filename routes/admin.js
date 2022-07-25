@@ -249,6 +249,28 @@ router.put('/standard/:id', async (req,res)=>{
 });
 
 //GET APIs
+router.get('/allteachers',async (req,res) => {
+    try {
+        const teachers = await teacherModel.Teacher.find();
+        if(!teachers) return res.status(404).send("There is no teacher found");
+        res.send(teachers);
+
+    } catch (err) {
+        res.status(404).send("Unexpected Error");
+    }
+})
+
+router.get('/allstudents',async (req,res) => {
+    try {
+        const students = await studentModel.Student.find();
+        if(!students) return res.status(404).send("There is no student found");
+        res.send(students);
+
+    } catch (err) {
+        res.status(404).send("Unexpected Error");
+    }
+})
+
 router.get('/teacher/:id',async (req,res)=>{
     try{
         const teacher = await teacherModel.Teacher.findById(req.params.id);

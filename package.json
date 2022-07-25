@@ -4,7 +4,7 @@
   "description": "SIH-2022",
   "main": "index.js",
   "scripts": {
-    "start":"set NODE_ENV=production&& node index.js",
+    "start": "set NODE_ENV=production&& node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Balasuriya29/onyourmarks#readme",
   "dependencies": {
     "config": "^3.3.7",
+    "cors": "^2.8.5",
     "express": "^4.18.1",
     "helmet": "^5.1.0",
     "joi": "^17.6.0",
