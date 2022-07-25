@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const mongoose_morgan = require('mongoose-morgan');
 const config = require('config');
+const cors = require('cors');
 
 //Importing Files
 const connection = require('./connection');
@@ -21,13 +22,15 @@ connection.connectDB(connectionString,"OnYourMarks");
 //Setting certain packages
 const app = express();
 app.use(express.json());
-app.use(helmet())
-app.use(mongoose_morgan({
-  collection: 'logs',
-  connectionString: connectionString,
- },{},
- 'common'
-));
+app.use(helmet());
+var corsOption = {
+  origin: "*",
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  allowedHeaders: 'Content-Type,Authorization,x-auth-token',
+};
+app.use(cors(corsOption));
+
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({
     collection: 'logs',
@@ -36,12 +39,14 @@ if(app.get('env') === "development"){
    'common'
   ));
 }
+
 app.use('/api/admin', admin);
 app.use('/api/teacher', teacher);
 app.use('/api/student',student);
 
 
 //Default Route
+app.options('/', cors()) 
 app.get("/", (req,res) => {
     res.status(200).send("Everything is Working Perfectly!!!");
 });
