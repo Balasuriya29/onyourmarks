@@ -7,10 +7,16 @@ const mongoose = require('mongoose');
 const coCurricularActivity = require('../models/cocurricularactivity');
 const student_teacher_relation =  require('../models/student-teacher-relation');
 const exam_std_relation = require('../models/exam-std-relation');
+const auth = require('../middleware/auth');
 
+//Functions
+function hasAuthority(role) {
+    return role === 'Student';
+}
 
 //GET APIs
-router.get('/mycca/:id/:condition', async(req,res)=>{
+router.get('/mycca/:id/:condition', auth, async(req,res)=>{
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     await coCurricularActivity.coCurricularActivity.find ({
         student_id : mongoose.Types.ObjectId(req.params.id),
         isVerified : req.params.condition
@@ -19,7 +25,8 @@ router.get('/mycca/:id/:condition', async(req,res)=>{
     });
 });
 
-router.get('/myteachers/:std_id', async(req,res)=>{
+router.get('/myteachers/:std_id', auth, async(req,res)=>{
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     await student_teacher_relation.studentTeacherRelationModel
     .find({
         std_id : req.params.std_id
@@ -31,11 +38,10 @@ router.get('/myteachers/:std_id', async(req,res)=>{
     }).catch((err)=>{
         res.send(err.message);
     });
-    
-    
 })
 
-router.get('/myexams/:std_id', async(req,res) => {
+router.get('/myexams/:std_id', auth, async(req,res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     await exam_std_relation.examStandardModel.find({
         std_id : req.params.std_id
     })
@@ -55,7 +61,8 @@ router.get('/myexams/:std_id', async(req,res) => {
 });
 
 //POST APIs
-router.post('/cca', async (req,res)=>{
+router.post('/cca', auth, async (req,res)=>{
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     const {error} = coCurricularActivity.validateCoCurricularActivity(req.body);
     if(error) return res.send(error.message);
 
@@ -67,7 +74,8 @@ router.post('/cca', async (req,res)=>{
 });
 
 //DELETE APIs
-router.delete('/cca/:id', async (req,res)=>{
+router.delete('/cca/:id', auth, async (req,res)=>{
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     await coCurricularActivity.coCurricularActivity.findByIdAndDelete(req.params.id)
         .then((v)=>{
             res.send(v);
@@ -76,5 +84,6 @@ router.delete('/cca/:id', async (req,res)=>{
             res.send(err.message);
         })
 });
+
 
 module.exports = router;

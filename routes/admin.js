@@ -11,6 +11,8 @@ const cocurricularactivity = require('../models/cocurricularactivity');
 const exam_std_relation = require('../models/exam-std-relation');
 const student_teacher_relation = require('../models/student-teacher-relation');
 const standardModel = require('../models/standard');
+const auth = require('../middleware/auth');
+const adminauth = require('../middleware/adminauth');
 
 //Functions
 async function isNotValidId(Model,id) {
@@ -19,31 +21,76 @@ async function isNotValidId(Model,id) {
             _id: id
         });
     } catch (error) {
-        console.log("Catch")
         return true;
     }
     return doc === null;
 }
+async function getTeacher(id) {
+    try {
+        const teacherDetails = await teacherModel.Teacher
+                        .findById(id);
+
+        const teacherRelation = await student_teacher_relation.studentTeacherRelationModel
+                                .find({
+                                    teacher_id:id
+                                });
+        const teacher = [];
+        teacher.push(teacherDetails);
+        teacher.push(teacherRelation);
+        return teacher;
+    } catch (error) {
+        return null;
+    }
+}
+async function getStudent(id) {
+    try {
+        const student = await studentModel.Student
+                        .findById(id)
+                        .populate({
+                                    path : 'std_id',
+                                    populate : {
+                                        path : 'subject_id',
+                                    }
+                                });
+        return student;
+    } catch (error) {
+        return null;
+    }
+}
+
+//me API
+router.get("/me", auth, async (req, res) => {
+    var role = req.user.role;
+    const user = (role == 'Teacher')
+                    ?(await getTeacher(req.user._id)).valueOf()
+                    :(role == 'Student')
+                        ?(await getStudent(req.user._id)).valueOf()
+                        :null;
+
+    if(user == null) return res.status(400).send("Invalid Token");
+
+    res.status(200).send(user);
+});
 
 //POST APIs✅
-router.post("/student",async (req, res)=>{
+router.post("/student", adminauth, async (req, res)=>{
     const {error} = studentModel.validateStudent(req.body);
     if(error) return res.status(404).send(error.details[0].message);
 
     const student = new studentModel.Student(req.body);
-
+    const studentToken = student.generateAuthToken();
     await student.save()
         .then((v) => {
-            res.status(200).send(v);
+            res.header('x-auth-token', studentToken).status(200).send(v);
         });
 });
 
-router.post("/teacher",async (req, res)=>{
+router.post("/teacher", adminauth, async (req, res)=>{
     const {error} = teacherModel.validateTeacher(req.body);
     if(error) return res.status(404).send(error.details[0].message);
 
     const teacher = new teacherModel.Teacher(req.body);
-
+    const teacherToken = teacher.generateAuthToken();
     await teacher.save(async (err,doc1)=>{
         if(err) return res.send(err.message);
         req.body.std_id.forEach(async element => {
@@ -65,12 +112,13 @@ router.post("/teacher",async (req, res)=>{
                     teacher : doc1._id,
             }
         ).then((v) => {
-            res.send(doc1);
+
+            res.header('x-auth-token',teacherToken).send(doc1);
         })       
     })
 });
 
-router.post("/standard",async (req, res)=>{
+router.post("/standard", adminauth,async (req, res)=>{
     const {error} = standardModel.validateStandardSchema(req.body);
     if(error) return res.status(404).send(error.details[0].message);
 
@@ -82,7 +130,7 @@ router.post("/standard",async (req, res)=>{
     })
 });
 
-router.post("/exam", async (req,res) => {
+router.post("/exam", adminauth,async (req,res) => {
     const {error} = examModel.validateExam(req.body);
     if(error) return res.status(404).send(error.details[0].message);
 
@@ -101,7 +149,7 @@ router.post("/exam", async (req,res) => {
     })
 });
 
-router.post("/subject",async (req,res)=>{
+router.post("/subject",adminauth,async (req,res)=>{
     const {error} = subjectModel.validateSubject(req.body);
     if(error) return res.status(404).send(error.details[0].message);
 
@@ -113,7 +161,7 @@ router.post("/subject",async (req,res)=>{
         });
 });
 
-router.post('/addStandardToTeacher/:id', async (req,res)=>{
+router.post('/addStandardToTeacher/:id',adminauth, async (req,res)=>{
     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
     if(isValid) return res.send("Teacher ID is Invalid");
 
@@ -128,7 +176,7 @@ router.post('/addStandardToTeacher/:id', async (req,res)=>{
 });
 
 //UPDATE APIs✅
-router.put('/teacher-details/:id', async (req,res) => {
+router.put('/teacher-details/:id', adminauth,async (req,res) => {
     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
     if(isValid) return res.send("Teacher ID is Invalid");
 
@@ -142,7 +190,7 @@ router.put('/teacher-details/:id', async (req,res) => {
     res.status(200).send(teacherToBeUpdated);
 });
 
-router.put('/teacher-standard-change/:id',async (req,res)=>{
+router.put('/teacher-standard-change/:id',adminauth,async (req,res)=>{
     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
     if(isValid) return res.send("Teacher ID is Invalid");
     await student_teacher_relation.studentTeacherRelationModel.deleteOne({
@@ -164,7 +212,7 @@ router.put('/teacher-standard-change/:id',async (req,res)=>{
     });
 })
 
-router.put('/student/:id', async (req,res) => {
+router.put('/student/:id', adminauth,async (req,res) => {
     var isValid = (await isNotValidId(studentModel.Student,req.params.id)).valueOf();
     if(isValid) return res.send("Student ID is Invalid");
 
@@ -179,20 +227,26 @@ router.put('/student/:id', async (req,res) => {
     res.status(200).send(studentToBeUpdated);
 });
 
-router.put('/subject/:id', async (req,res) => {
+router.put('/subject/:id', adminauth,async (req,res) => {
     var isValid = (await isNotValidId(subjectModel.Subject,req.params.id)).valueOf();
     if(isValid) return res.send("Subject ID is Invalid");
 
     const subjectToBeUpdated = await subjectModel.Subject.findById(req.params.id)
-    const studentTeacher = await student_teacher_relation.studentTeacherRelationModel.findById(req.body.subject_id);
-    
-    subjectToBeUpdated.teacher = studentTeacher.teacher = req.body.teacher;
+    subjectToBeUpdated.teacher = req.body.teacher;
 
-    studentTeacher
-    .save()
-    .catch((err) => {
-        res.send(err.message).status(404);
+    req.body.std_id.forEach( async element => {
+        const studentTeacher = await student_teacher_relation.studentTeacherRelationModel({
+            teacher_id:req.body.teacher,
+            subject_id:req.params.id,
+            std_id:element
+        });
+        studentTeacher
+        .save()
+        .catch((err) => {
+            res.send(err.message).status(404);
+        });
     });
+
     subjectToBeUpdated
     .save()
     .catch((err) => {
@@ -202,7 +256,7 @@ router.put('/subject/:id', async (req,res) => {
     res.status(200).send(subjectToBeUpdated);
 });
 
-router.put('/activity/:id',async (req,res)=>{
+router.put('/activity/:id',adminauth,async (req,res)=>{
     const value = req.body.isVerified;
     const activity = await cocurricularactivity.coCurricularActivity.findById(req.params.id);
     console.log(activity);
@@ -214,7 +268,7 @@ router.put('/activity/:id',async (req,res)=>{
                 $inc : {
                     "cca.participated":1
                 }
-        })
+            })
         }
         else{
             await studentModel.Student.findByIdAndUpdate(activity['student_id'],{
@@ -234,7 +288,7 @@ router.put('/activity/:id',async (req,res)=>{
         })
 });
 
-router.put('/standard/:id', async (req,res)=>{
+router.put('/standard/:id', adminauth,async (req,res)=>{
     const standard = await standardModel.standardModel.findById(req.params.id);
     standard.std_name = req.body.std_name;
     standard.subject_id.push(...req.body.subject_id);
@@ -262,7 +316,14 @@ router.get('/allteachers',async (req,res) => {
 
 router.get('/allstudents',async (req,res) => {
     try {
-        const students = await studentModel.Student.find();
+        const students = await studentModel.Student
+                        .find()
+                        .populate({
+                            path : 'std_id',
+                            populate : {
+                                path : 'subject_id',
+                            }
+                        });
         if(!students) return res.status(404).send("There is no student found");
         res.send(students);
 
@@ -271,18 +332,17 @@ router.get('/allstudents',async (req,res) => {
     }
 })
 
-router.get('/teacher/:id',async (req,res)=>{
+router.get('/teacher/:id',adminauth,async (req,res)=>{
     try{
-        const teacher = await teacherModel.Teacher.findById(req.params.id);
+        const teacher = await teacherModel.Teacher.findById(id);
         if(!teacher) return res.status(404).send("Teacher not found");
-        res.send(teacher);
+        
     }
     catch(err){
         res.status(404).send("Invalid id");
     }
 });
-
-router.get('/student/:id',async (req,res)=>{
+router.get('/student/:id',adminauth,async (req,res)=>{
     try{
         const student = await studentModel.Student.findById(req.params.id).populate({
             path : 'std_id',
@@ -297,9 +357,9 @@ router.get('/student/:id',async (req,res)=>{
         console.log(err);
         res.status(404).send(err);
     }
-});
+}); 
 
-router.get('/cca/:condition', async(req,res)=>{
+router.get('/cca/:condition', adminauth,async(req,res)=>{
     var condition = "pending";
     if(req.params.condition === "accepted"){
         condition = "accepted";
@@ -313,7 +373,7 @@ router.get('/cca/:condition', async(req,res)=>{
     res.send(cca);
 });
 
-router.get('/subjects/unassigned', async(req,res)=>{
+router.get('/subjects/unassigned',adminauth, async(req,res)=>{
     await subjectModel.Subject.find({
         teacher : null
     })
@@ -326,20 +386,20 @@ router.get('/subjects/unassigned', async(req,res)=>{
 })
 
 //DELETE APIs
-router.delete("/student/:id",async (req,res)=>{
+router.delete("/student/:id",adminauth,async (req,res)=>{
     await studentModel.Student.findByIdAndDelete(req.params.id)
     .then((v)=>res.send("Successfully deleted"))
     .catch((err)=>res.send(err.message).status(404));
 });
 
-router.delete("/subject/:id",async (req,res)=>{
+router.delete("/subject/:id",adminauth,async (req,res)=>{
     await subjectModel.Subject.deleteOne({
         _id: req.params.id
     }).then((v)=>res.send("Successfully deleted"))
         .catch((err)=>res.send(err).status(404));
 })
 
-router.delete("/teacher/:id",async (req,res)=>{
+router.delete("/teacher/:id",adminauth,async (req,res)=>{
     await teacherModel.Teacher.findByIdAndUpdate(
         req.params.id,
         {
@@ -368,7 +428,7 @@ router.delete("/teacher/:id",async (req,res)=>{
         .catch((err)=>res.send(err).status(404));
 });
 
-router.delete("/exam/:id",async (req,res)=>{
+router.delete("/exam/:id",adminauth,async (req,res)=>{
     await examModel.Exam.deleteOne({
         _id: req.params.id
     }).then(async (v)=>{

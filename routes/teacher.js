@@ -6,9 +6,16 @@ const router = express.Router();
 const studentModel = require('../models/studentmodel');
 const marksModel = require('../models/marksmodel');
 const studentTeacherRelation = require('../models/student-teacher-relation');
+const auth = require('../middleware/auth');
+
+//Functions
+function hasAuthority(role) {
+    return role === 'Teacher';
+}
 
 //POST APIs 
-router.post('/marks/:id', async (req, res) => {
+router.post('/marks/:id', auth,async (req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     const {error} = marksModel.validateMark({
         student_id : req.params.id,
         exam_id : req.body.exam_id,
@@ -32,7 +39,8 @@ router.post('/marks/:id', async (req, res) => {
 });
 
 //GET APIs
-router.get('/mystudents/:id', async (req,res) => {
+router.get('/mystudents/:id',auth, async (req,res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     const standard = [];
     const teacher = await studentTeacherRelation.studentTeacherRelationModel.find({
                         teacher_id:req.params.id,

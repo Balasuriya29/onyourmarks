@@ -30,6 +30,7 @@ var corsOption = {
   allowedHeaders: 'Content-Type,Authorization,x-auth-token',
 };
 app.use(cors(corsOption));
+app.use(helmet())
 
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({

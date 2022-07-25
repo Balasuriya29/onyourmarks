@@ -1,5 +1,7 @@
 //Required Packages
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 const Joi = require("joi");
 
 //Defining a teacherSchema
@@ -17,6 +19,12 @@ const teacherSchema = new mongoose.Schema({
     salary: Number,
     status: String
 });
+
+//Method for Token Generation
+teacherSchema.methods.generateAuthToken = function() {
+    const token = jwt.sign({_id : this._id, role: "Teacher"}, config.get('jwtPrivateKey'));
+    return token;
+}
 
 //Creating a Model
 const Teacher = mongoose.model('newTeacher', teacherSchema, 'teacher');
