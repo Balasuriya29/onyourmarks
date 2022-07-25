@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
+const config = require('config');
 
 //Defining a studentSchema
 const studentSchema = new mongoose.Schema({
@@ -24,6 +25,12 @@ const studentSchema = new mongoose.Schema({
     motherTongue: String,
     bloodGroup: String,
 });
+
+//Method for Token Generation
+studentSchema.methods.generateAuthToken = function() {
+    const token = jwt.sign({_id : this._id, role: "Student"}, config.get('jwtPrivateKey'));
+    return token;
+}
 
 //Creating a Model
 const Student = mongoose.model('newStudent', studentSchema, 'student');
@@ -49,13 +56,6 @@ function validateStudent(student) {
     });
     return tempschema.validate(student);
 }
-
-//Method for Token Generation
-studentSchema.methods.generateAuthToken = function() {
-    const token = jwt.sign({_id : this._id, role: "Student"}, config.get('jwtPrivateKey'));
-    return token;
-}
-
 
 module.exports.Student = Student;
 module.exports.validateStudent = validateStudent;
