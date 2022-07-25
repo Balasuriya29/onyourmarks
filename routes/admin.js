@@ -252,7 +252,7 @@ router.delete("/subject/:id",async (req,res)=>{
 router.delete("/teacher/:id",async (req,res)=>{
     await teacherModel.Teacher.deleteOne({
         _id: req.params.id
-    }).then((v)=>{
+    }).then(async (v)=>{
         await student_teacher_relation.studentTeacherRelationModel.deleteMany({
             teacher_id : req.params.id
         })
