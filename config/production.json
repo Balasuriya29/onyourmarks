@@ -1,0 +1,5 @@
+{
+    "DBUserName": "OnYourMarks_DBUserName",
+    "DBPassword": "OnYourMarks_DBPassword",
+    "jwtPrivateKey": "OnYourMarks_jwtPrivateKey"
+}
