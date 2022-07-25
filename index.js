@@ -46,8 +46,8 @@ app.use('/api/student',student);
 
 
 //Default Route
-app.options('/', cors(corsOption)) 
-app.get("/", (req,res) => {
+
+app.get("/", cors(corsOption), (req,res) => {
     res.status(200).send("Everything is Working Perfectly!!!");
 });
 
