@@ -7,6 +7,7 @@ const studentModel = require('../models/studentmodel');
 const marksModel = require('../models/marksmodel');
 const studentTeacherRelation = require('../models/student-teacher-relation');
 const auth = require('../middleware/auth');
+const { examStandardModel } = require('../models/exam-std-relation');
 
 //Functions
 function hasAuthority(role) {
@@ -39,11 +40,11 @@ router.post('/marks/:id', auth,async (req, res) => {
 });
 
 //GET APIs
-router.get('/mystudents/:id',auth, async (req,res) => {
+router.get('/mystudents',auth, async (req,res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     const standard = [];
     const teacher = await studentTeacherRelation.studentTeacherRelationModel.find({
-                        teacher_id:req.params.id,
+                        teacher_id:req.user._id,
                     });
     for (var i in teacher){
         const students = await studentModel.Student.find({
@@ -56,6 +57,28 @@ router.get('/mystudents/:id',auth, async (req,res) => {
         standard.push(students);
     }
     res.send(standard);
+});
+
+router.get('/getexams', auth, async(req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+    const exams = []
+    const teacher = await studentTeacherRelation.studentTeacherRelationModel.find({
+        teacher_id:req.user._id,
+    });
+    for (var i in teacher){
+        console.log(teacher[i].std_id)
+        var exam = await examStandardModel.find({
+            std : teacher[i].std_id
+        })
+        .populate('exam_id')
+        .catch((err)=>{
+            res.send(err.message);
+        })
+
+        console.log(exam);
+        if(exam) exams.push(exam);
+    }
+    res.send(exams);
 });
 
 module.exports = router;
