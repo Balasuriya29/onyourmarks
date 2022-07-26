@@ -66,7 +66,7 @@ router.get('/getexams', auth, async(req, res) => {
         teacher_id:req.user._id,
     });
     for (var i in teacher){
-        console.log(teacher[i].std_id)
+        // console.log(teacher[i].std_id)
         var exam = await examStandardModel.find({
             std : teacher[i].std_id
         })
@@ -76,6 +76,7 @@ router.get('/getexams', auth, async(req, res) => {
                 path: 'subjects'
             }
         })
+        .populate('std')
         .catch((err)=>{
             res.send(err.message);
         })
