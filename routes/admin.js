@@ -332,6 +332,32 @@ router.get('/allstudents',async (req,res) => {
     }
 })
 
+router.get('/allsubjects',async (req,res) => {
+    try {
+        const subjects = await subjectModel.Subject
+                        .find()
+                        .populate('teacher');
+        if(!subjects) return res.status(404).send("There is no subject found");
+        res.send(subjects);
+
+    } catch (err) {
+        res.status(404).send("Unexpected Error");
+    }
+})
+
+router.get('/allexams',async (req,res) => {
+    try {
+        const exams = await studentModel.Student
+                        .find()
+                        .populate('subjects');
+        if(!exams) return res.status(404).send("There is no exam found");
+        res.send(exams);
+
+    } catch (err) {
+        res.status(400).send("Unexpected Error");
+    }
+})
+
 router.get('/teacher/:id',adminauth,async (req,res)=>{
     try{
         const teacher = await teacherModel.Teacher.findById(id);
@@ -369,7 +395,7 @@ router.get('/cca/:condition', adminauth,async(req,res)=>{
     }
     const cca = await cocurricularactivity.coCurricularActivity
             .find({isVerified:condition})
-            .populate('student_id',['roll_no','name']);
+            .populate('student_id',['roll_no','first_name','last_name']);
     res.send(cca);
 });
 
