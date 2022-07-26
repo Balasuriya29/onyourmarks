@@ -347,7 +347,7 @@ router.get('/allsubjects',async (req,res) => {
 
 router.get('/allexams',async (req,res) => {
     try {
-        const exams = await studentModel.Student
+        const exams = await examModel.Exam
                         .find()
                         .populate('subjects');
         if(!exams) return res.status(404).send("There is no exam found");
