@@ -70,7 +70,12 @@ router.get('/getexams', auth, async(req, res) => {
         var exam = await examStandardModel.find({
             std : teacher[i].std_id
         })
-        .populate('exam_id')
+        .populate({
+            path : 'exam_id',
+            populate : {
+                path: 'subjects'
+            }
+        })
         .catch((err)=>{
             res.send(err.message);
         })
