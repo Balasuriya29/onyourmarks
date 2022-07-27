@@ -6,7 +6,8 @@ const config = require('config');
 
 //Defining a studentSchema
 const studentSchema = new mongoose.Schema({
-    name: String,
+    first_name: String,
+    last_name : String,
     roll_no: String,
     std_id: {
         type: mongoose.Types.ObjectId,
@@ -38,7 +39,8 @@ const Student = mongoose.model('newStudent', studentSchema, 'student');
 //Validation 
 function validateStudent(student) {
     const tempschema = Joi.object({
-        name: Joi.string().required(),
+        first_name: Joi.string().required(),
+        last_name: Joi.string().required(),
         roll_no:Joi.required(),
         std_id: Joi.required(),
         dob: Joi.date().required(),

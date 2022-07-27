@@ -10,6 +10,7 @@ const connection = require('./connection');
 const admin = require('./routes/admin');
 const teacher = require('./routes/teacher')
 const student = require('./routes/student');
+const chat = require('./routes/chat');
 
 //Verifiy for jwtPrivateKey
 
@@ -34,6 +35,7 @@ if(app.get('env') === "development"){
 app.use('/api/admin', admin);
 app.use('/api/teacher', teacher);
 app.use('/api/student',student);
+app.use('/api/chat',chat);
 
 
 //Default Route

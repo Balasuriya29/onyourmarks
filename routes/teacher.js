@@ -7,6 +7,8 @@ const studentModel = require('../models/studentmodel');
 const marksModel = require('../models/marksmodel');
 const studentTeacherRelation = require('../models/student-teacher-relation');
 const auth = require('../middleware/auth');
+const chatmodel = require('../models/chatmodel');
+const messagemodel = require('../models/messagemodel');
 const { examStandardModel } = require('../models/exam-std-relation');
 
 //Functions
@@ -80,5 +82,33 @@ router.get('/getexams', auth, async(req, res) => {
     }
     res.send(exams);
 });
+
+router.get("/mychat",auth,async (req,res)=>{
+    await chatmodel.Chat.find({
+        teacher_id : req.user._id
+    }).populate('student_id',["first_name","last_name"]).then((v)=>{
+        res.send(v);
+    });    
+});
+
+router.get('/students-without-chat',auth,async(req,res)=>{
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+    const allStudents =  await chatmodel.Chat.find({
+        teacher_id : req.user._id
+    });
+    const studentIDs=[];
+    allStudents.forEach((ele)=>{
+        studentIDs.push(ele.student_id);
+    });
+    await studentModel.Student.find({
+        _id : {
+            $nin : studentIDs
+        }
+    }).then((v)=>{
+        res.send(v)
+    }).catch((err)=>{
+        res.send(err.message);
+    })
+})
 
 module.exports = router;
