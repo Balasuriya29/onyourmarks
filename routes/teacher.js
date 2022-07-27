@@ -55,8 +55,11 @@ router.get('/mystudents/:std_id',auth, async (req,res) => {
     for (var i in teacher){
         const students = await studentModel.Student.find({
             std_id : teacher[i].std_id
-        })
+        },
+        'first_name last_name roll_no'
+        )
         .populate('std_id',['std_name'])
+
         .catch((err)=>{
             res.send(err.message);
         })
