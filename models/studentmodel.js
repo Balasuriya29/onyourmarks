@@ -7,7 +7,7 @@ const config = require('config');
 //Defining a studentSchema
 const studentSchema = new mongoose.Schema({
     first_name: String,
-    last_name: String,
+    last_name : String,
     roll_no: String,
     std_id: {
         type: mongoose.Types.ObjectId,

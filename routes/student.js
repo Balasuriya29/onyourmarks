@@ -8,6 +8,9 @@ const coCurricularActivity = require('../models/cocurricularactivity');
 const student_teacher_relation =  require('../models/student-teacher-relation');
 const exam_std_relation = require('../models/exam-std-relation');
 const auth = require('../middleware/auth');
+const chatmodel = require('../models/chatmodel');
+const messagemodel = require('../models/messagemodel');
+const {Teacher} = require('../models/teachermodel');
 
 //Functions
 function hasAuthority(role) {
@@ -59,6 +62,36 @@ router.get('/myexams/:std_id', auth, async(req,res) => {
     })
 
 });
+
+router.get("/mychat",auth,async (req,res)=>{
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+    await chatmodel.Chat.find({
+        student_id : req.user._id
+    }).populate('teacher_id',["name"]).then((v)=>{
+        res.send(v);
+    });    
+});
+
+router.get('/teachers-without-chat',auth,async(req,res)=>{
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+    const allTeachers =  await chatmodel.Chat.find({
+        student_id : req.user._id
+    });
+    const teacherIDs=[];
+    allTeachers.forEach((ele)=>{
+        teacherIDs.push(ele.teacher_id);
+    });
+    await Teacher.find({
+        _id : {
+            $nin : teacherIDs
+        }
+    }).then((v)=>{
+        res.send(v)
+    }).catch((err)=>{
+        res.send(err.message);
+    })
+})
+
 
 //POST APIs
 router.post('/cca', auth, async (req,res)=>{
