@@ -40,12 +40,18 @@ router.post('/marks/:id', auth,async (req, res) => {
 });
 
 //GET APIs
-router.get('/mystudents',auth, async (req,res) => {
+router.get('/mystudents/:std_id',auth, async (req,res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
     const standard = [];
-    const teacher = await studentTeacherRelation.studentTeacherRelationModel.find({
-                        teacher_id:req.user._id,
-                    });
+    const teacher = (req.params.std_id == "All")
+    ?await studentTeacherRelation.studentTeacherRelationModel.find({
+        teacher_id:req.user._id,
+    })
+    :await studentTeacherRelation.studentTeacherRelationModel.find({
+        teacher_id:req.user._id,
+        std_id: req.params.std_id
+    });
     for (var i in teacher){
         const students = await studentModel.Student.find({
             std_id : teacher[i].std_id
