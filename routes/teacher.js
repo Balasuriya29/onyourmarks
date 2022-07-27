@@ -56,6 +56,7 @@ router.get('/mystudents',auth, async (req,res) => {
         })
         standard.push(students);
     }
+    
     res.send(standard);
 });
 
