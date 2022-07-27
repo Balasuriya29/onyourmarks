@@ -4,10 +4,6 @@ const Joi = require('joi');
 //Defining a adminSchema
 const subjectSchema = new mongoose.Schema({
     sub_name : String,
-    teacher:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'newTeacher'
-        },
     total_marks: Number
 });
 

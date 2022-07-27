@@ -13,6 +13,7 @@ const student_teacher_relation = require('../models/student-teacher-relation');
 const standardModel = require('../models/standard');
 const auth = require('../middleware/auth');
 const adminauth = require('../middleware/adminauth');
+const _ = require('underscore');
 
 //Functions
 async function isNotValidId(Model,id) {
@@ -102,19 +103,10 @@ router.post("/teacher", adminauth, async (req, res)=>{
             studentTeacher.save(async (err,doc2)=>{
                 if(err) return res.send(err.message);
             })
-        })
+        });
 
-        await subjectModel.Subject.findByIdAndUpdate(
-            {
-                _id : req.body.subject_id,
-            },
-            {
-                    teacher : doc1._id,
-            }
-        ).then((v) => {
-
-            res.header('x-auth-token',teacherToken).send(doc1);
-        })       
+        res.header('x-auth-token',teacherToken).send(teacher);
+    
     })
 });
 
@@ -231,9 +223,6 @@ router.put('/subject/:id', adminauth,async (req,res) => {
     var isValid = (await isNotValidId(subjectModel.Subject,req.params.id)).valueOf();
     if(isValid) return res.send("Subject ID is Invalid");
 
-    const subjectToBeUpdated = await subjectModel.Subject.findById(req.params.id)
-    subjectToBeUpdated.teacher = req.body.teacher;
-
     req.body.std_id.forEach( async element => {
         const studentTeacher = await student_teacher_relation.studentTeacherRelationModel({
             teacher_id:req.body.teacher,
@@ -246,14 +235,8 @@ router.put('/subject/:id', adminauth,async (req,res) => {
             res.send(err.message).status(404);
         });
     });
-
-    subjectToBeUpdated
-    .save()
-    .catch((err) => {
-        res.send(err.message).status(404);
-    })
     
-    res.status(200).send(subjectToBeUpdated);
+    res.status(200).send("Updated All Subjects");
 });
 
 router.put('/activity/:id',adminauth,async (req,res)=>{
@@ -336,7 +319,6 @@ router.get('/allsubjects',async (req,res) => {
     try {
         const subjects = await subjectModel.Subject
                         .find()
-                        .populate('teacher');
         if(!subjects) return res.status(404).send("There is no subject found");
         res.send(subjects);
 
@@ -400,15 +382,21 @@ router.get('/cca/:condition', adminauth,async(req,res)=>{
 });
 
 router.get('/subjects/unassigned',adminauth, async(req,res)=>{
-    await subjectModel.Subject.find({
-        teacher : null
-    })
-    .then((v)=>{
-        res.send(v).status(200);
-    })
-    .catch((err)=>{
-        res.send(err.message).status(404);
-    })
+    const subjects = await student_teacher_relation.studentTeacherRelationModel.find().select('subject_id');
+    const subjectIds = [];
+    subjects.forEach(async element => {
+        subjectIds.push(element.subject_id);
+    });
+
+    const unassignedSubjects = await subjectModel.Subject.find(
+        {
+            _id : {
+                $nin: subjectIds
+            }
+        }
+    )
+
+    res.send(unassignedSubjects);
 })
 
 //DELETE APIs
