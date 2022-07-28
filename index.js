@@ -13,8 +13,12 @@ const teacher = require('./routes/teacher')
 const student = require('./routes/student');
 const chat = require('./routes/chat');
 
-//Verifiy for jwtPrivateKey
-
+//Check for jwtPrivateKey
+if(!config.get('jwtPrivateKey')){
+  console.log(config.get('jwtPrivateKey'))
+  console.error('FATAL ERROR: jwtPrivateKey is not defined');
+  process.exit(1);
+}
 
 //Connection to MongoDB
 const connectionString = `mongodb+srv://${config.get('DBUserName')}:${config.get('DBPassword')}@cluster0.dfr13.mongodb.net/OnYourMarks?retryWrites=true&w=majority`;

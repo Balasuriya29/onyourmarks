@@ -11,9 +11,13 @@ const connection = require('./connection');
 const admin = require('./routes/admin');
 const teacher = require('./routes/teacher')
 const student = require('./routes/student');
+const chat = require('./routes/chat');
 
-//Verifiy for jwtPrivateKey
-
+//Check for jwtPrivateKey
+if(!config.get('jwtPrivateKey')){
+  console.error('FATAL ERROR: jwtPrivateKey is not defined');
+  process.exit(1);
+}
 
 //Connection to MongoDB
 const connectionString = `mongodb+srv://${config.get('DBUserName')}:${config.get('DBPassword')}@cluster0.dfr13.mongodb.net/OnYourMarks?retryWrites=true&w=majority`;
@@ -30,7 +34,6 @@ var corsOption = {
   allowedHeaders: 'Content-Type,Authorization,x-auth-token',
 };
 app.use(cors(corsOption));
-app.use(helmet())
 
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({
@@ -44,9 +47,11 @@ if(app.get('env') === "development"){
 app.use('/api/admin', admin);
 app.use('/api/teacher', teacher);
 app.use('/api/student',student);
+app.use('/api/chat',chat);
 
 
 //Default Route
+app.options('/', cors()) 
 app.get("/", (req,res) => {
     res.status(200).send("Everything is Working Perfectly!!!");
 });

@@ -25,16 +25,21 @@ router.post('/marks/:id', auth,async (req, res) => {
         subject_id:req.body.subject_id,
         obtained: req.body.obtained
     });
+
     if(error) return res.send(error.details[0].message);
-    const markToBeUpdated = await marksModel.markmodel({
+
+    await marksModel.markmodel.updateOne({
         student_id : req.params.id,
         exam_id : req.body.exam_id,
         subject_id:req.body.subject_id,
-        obtained: req.body.obtained
-    })
-    markToBeUpdated.save()
-    .then((v)=>{
-        res.send(v).status(200);
+    },
+    {
+        obtained : req.body.obtained
+    },
+    {
+        upsert:true,
+    }).then((v)=>{
+        res.send(v)
     })
     .catch((err)=>{
         res.send(err.message);
