@@ -76,6 +76,18 @@ router.get('/mystudents/:std_id',auth, async (req,res) => {
     res.send(standard);
 });
 
+router.get('/studentsmarks/:exam_id/:subject_id', auth , async(req,res)=>{
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+    const students = await marksModel.markmodel.find({
+        exam_id: req.params.exam_id,
+        subject_id: req.params.subject_id
+    },
+    'obtained student_id'
+    );
+
+    res.send(students);
+})
+
 router.get('/getexams', auth, async(req, res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     const exams = []
