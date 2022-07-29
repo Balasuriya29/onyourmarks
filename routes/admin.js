@@ -34,7 +34,9 @@ async function getTeacher(id) {
         const teacherRelation = await student_teacher_relation.studentTeacherRelationModel
                                 .find({
                                     teacher_id:id
-                                });
+                                })
+                                .populate('subject_id')
+                                .populate('std_id','std_name');
         const teacher = [];
         teacher.push(teacherDetails);
         teacher.push(teacherRelation);
