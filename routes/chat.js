@@ -7,7 +7,7 @@ const auth = require('../middleware/auth');
 
 
 router.post("/",auth,async (req,res)=>{
-       const {error} = chatmodel.validateSchema(req.body);
+    const {error} = chatmodel.validateSchema(req.body);
     if(error) return res.send(error.details[0].message);
     const chat = await chatmodel.Chat(req.body);
     chat

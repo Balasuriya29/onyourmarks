@@ -28,6 +28,7 @@
     "mongoose": "^6.4.4",
     "mongoose-morgan": "^1.0.17",
     "nodemon": "^2.0.19",
-    "underscore": "^1.13.4"
+    "underscore": "^1.13.4",
+    "websocket": "^1.0.34"
   }
 }

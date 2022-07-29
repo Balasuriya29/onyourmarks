@@ -340,6 +340,19 @@ router.get('/allexams',async (req,res) => {
     }
 })
 
+router.get('/allstandards',async (req,res) => {
+    try {
+        const standards = await standardModel.standardModel
+                        .find()
+                        .populate('subject_id');
+        if(!standards) return res.status(404).send("There is no standard found");
+        res.send(standards);
+
+    } catch (err) {
+        res.status(400).send("Unexpected Error");
+    }
+})
+
 router.get('/teacher/:id',adminauth,async (req,res)=>{
     try{
         const teacher = await teacherModel.Teacher.findById(id);
