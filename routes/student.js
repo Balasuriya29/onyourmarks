@@ -11,6 +11,7 @@ const auth = require('../middleware/auth');
 const chatmodel = require('../models/chatmodel');
 const messagemodel = require('../models/messagemodel');
 const {Teacher} = require('../models/teachermodel');
+const marksmodel = require('../models/marksmodel');
 
 //Functions
 function hasAuthority(role) {
@@ -46,7 +47,7 @@ router.get('/myteachers/:std_id', auth, async(req,res)=>{
 router.get('/myexams/:std_id', auth, async(req,res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     await exam_std_relation.examStandardModel.find({
-        std_id : req.params.std_id
+        std : req.params.std_id
     })
     .populate({
         path : 'exam_id',
@@ -90,7 +91,25 @@ router.get('/teachers-without-chat',auth,async(req,res)=>{
     }).catch((err)=>{
         res.send(err.message);
     })
-})
+});
+
+
+router.get('/mymarks',auth,async(req,res)=>{
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+    const student_id = req.user._id;
+    await marksmodel.markmodel.find({
+        student_id : student_id
+    })
+    .populate('exam_id',['exam_name'])
+    .populate('subject_id',['sub_name','total_marks'])
+    .then((v)=>{
+        res.send(v);
+    })
+    .catch((err)=>{
+        res.send(err.message)
+    });
+
+});
 
 
 //POST APIs
