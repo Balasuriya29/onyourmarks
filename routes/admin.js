@@ -355,6 +355,14 @@ router.get('/subjects/unassigned',adminauth, async(req,res)=>{
     .catch((err)=>{
         res.send(err.message).status(404);
     })
+});
+
+router.get('/standards',adminauth,async(req,res)=>{
+    const standards = await standardModel.standardModel.find().then((v)=>{
+        res.send(v);
+    }).catch((err)=>{
+        res.send(err.message);
+    })
 })
 
 //DELETE APIs
