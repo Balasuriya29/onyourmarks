@@ -314,6 +314,16 @@ router.get('/teacher/:id',adminauth,async (req,res)=>{
         res.status(404).send("Invalid id");
     }
 });
+
+router.get('/teacher',adminauth,async(req,res)=>{
+    await teacherModel.Teacher.find().then((v)=>{
+        res.send(v);
+    })
+    .catch((err)=>{
+        res.send(err.message);
+    })
+})
+
 router.get('/student/:id',adminauth,async (req,res)=>{
     try{
         const student = await studentModel.Student.findById(req.params.id).populate({
