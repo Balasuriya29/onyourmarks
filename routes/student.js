@@ -19,10 +19,16 @@ function hasAuthority(role) {
 }
 
 //GET APIs
-router.get('/mycca/:id/:condition', auth, async(req,res)=>{
+router.get('/mycca/:condition', auth, async(req,res)=>{
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
-    await coCurricularActivity.coCurricularActivity.find ({
-        student_id : mongoose.Types.ObjectId(req.params.id),
+    (req.params.condition == 'All')
+    ?await coCurricularActivity.coCurricularActivity.find ({
+        student_id : req.user._id,
+    }).then((v)=>{
+        res.send(v);
+    })
+    :await coCurricularActivity.coCurricularActivity.find ({
+        student_id : req.user._id,
         isVerified : req.params.condition
     }).then((v)=>{
         res.send(v);
