@@ -208,7 +208,9 @@ router.put('/teacher-details/:id', adminauth,async (req,res) => {
     if(isValid) return res.send("Teacher ID is Invalid");
 
     const teacherToBeUpdated = await teacherModel.Teacher.findOneAndUpdate(
-        req.params.id,
+        {
+        _id : req.params.id
+        },
         req.body,
         {
             new: true,
@@ -245,7 +247,9 @@ router.put('/student/:id', adminauth,async (req,res) => {
     if(isValid) return res.send("Student ID is Invalid");
 
     const studentToBeUpdated = await studentModel.Student.findOneAndUpdate(
-        req.params.id,
+        {
+            _id: req.params.id
+        },
         req.body,
         {
             new: true,
