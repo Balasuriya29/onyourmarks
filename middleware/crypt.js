@@ -1,7 +1,8 @@
+const config = require('config');
 const crypto = require('crypto');
 
 // First we get our unique key to encrypt our object
-var password = "process.env['CRYPT_PASSWORD']";
+var password = config.get("cipherKey");
 
 // To be used as salt in encryption and decryption
 var ivstring = crypto.randomBytes(16);
@@ -49,3 +50,4 @@ async function decode(string) {
 
 
 module.exports={encode, decode};
+

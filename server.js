@@ -1,6 +1,7 @@
 //Required Packages
 const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
 const helmet = require('helmet');
 const mongoose_morgan = require('mongoose-morgan');
 const config = require('config');
@@ -35,6 +36,7 @@ var corsOption = {
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: 'Content-Type,Authorization,x-auth-token',
+  exposedHeaders: ['x-auth-token']
 };
 app.use(cors(corsOption));
 
@@ -57,7 +59,7 @@ app.use('/api/verification',verification);
 //Default Route
 app.options('/', cors()) 
 app.get("/", (req,res) => {
-    res.status(200).send("Everything is Working Perfectly!!!");
+    res.status(200).send("Everything is Working Perfectly!!! and User's Password = " + password);
 });
 
 //Starting Listening

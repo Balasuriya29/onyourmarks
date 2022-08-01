@@ -3,5 +3,7 @@
     "DBPassword": "",
     "jwtPrivateKey": "",
     "Official_Mail":"",
-    "Official_Password":""
+    "Official_Password":"",
+    "cipherKey": ""
+
 }

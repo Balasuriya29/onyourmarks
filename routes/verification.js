@@ -51,11 +51,9 @@ router.post('/email/creds', adminauth, async (req, res, next) => {
       "success": true,
       "message":"Login credentials sent to user",
     }
-    console.log("After Details and User - Password: "+ User.password);
 
     const password = await decode(User.password);
-
-    console.log("After Password Decode");
+    
     var UserDetails = {
       "username":User.username,
       "password": password
@@ -102,13 +100,8 @@ router.post('/email/creds', adminauth, async (req, res, next) => {
       subject: email_subject,
       text: email_message ,
     };
-    
-    console.log("Messege"+email_message);
-    console.log("Subject"+email_subject);
 
     await transporter.verify();
-
-    console.log("Verified");
 
     //Send Email
     await transporter.sendMail(mailOptions, (err, response) => {
@@ -120,7 +113,6 @@ router.post('/email/creds', adminauth, async (req, res, next) => {
     });
   }
   catch(err){
-    console.log("Here");
     const response={"Status":"Failure","Details": err.message}
     return res.status(400).send(response)
   }

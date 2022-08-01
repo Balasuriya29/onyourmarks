@@ -15,8 +15,6 @@ const student = require('./routes/student');
 const chat = require('./routes/chat');
 const user = require('./routes/user');
 const verification = require('./routes/verification');
-const userModel = require('./models/usermodel');
-const {encode,decode} = require('./middleware/crypt');
 
 //Check for jwtPrivateKey
 if(!config.get('jwtPrivateKey')){
@@ -60,12 +58,7 @@ app.use('/api/verification',verification);
 
 //Default Route
 app.options('/', cors()) 
-app.get("/", async (req,res) => {
-    // let User = await userModel.users.findOne({username: "11B08"});
-    // let password = await decode('NCL8by0MsxkroCD/dRvpgQ==');
-    var a = await encode('user');
-    var password = await decode(a);
-
+app.get("/", (req,res) => {
     res.status(200).send("Everything is Working Perfectly!!! and User's Password = " + password);
 });
 

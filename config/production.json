@@ -3,5 +3,6 @@
     "DBPassword": "OnYourMarks_DBPassword",
     "jwtPrivateKey": "OnYourMarks_jwtPrivateKey",
     "Official_Mail":"OnYourMarks_Official_Mail",
-    "Official_Password":"OnYourMarks_Official_Password"
+    "Official_Password":"OnYourMarks_Official_Password",
+    "cipherKey": "OnYourMarks_cipherKey"
 }
