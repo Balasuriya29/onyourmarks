@@ -1,6 +1,7 @@
 //Required Packages
 const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
 const helmet = require('helmet');
 const mongoose_morgan = require('mongoose-morgan');
 const config = require('config');
@@ -14,6 +15,8 @@ const student = require('./routes/student');
 const chat = require('./routes/chat');
 const user = require('./routes/user');
 const verification = require('./routes/verification');
+const userModel = require('./models/usermodel');
+const {encode,decode} = require('./middleware/crypt');
 
 //Check for jwtPrivateKey
 if(!config.get('jwtPrivateKey')){
@@ -35,6 +38,7 @@ var corsOption = {
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: 'Content-Type,Authorization,x-auth-token',
+  exposedHeaders: ['x-auth-token']
 };
 app.use(cors(corsOption));
 
@@ -56,8 +60,13 @@ app.use('/api/verification',verification);
 
 //Default Route
 app.options('/', cors()) 
-app.get("/", (req,res) => {
-    res.status(200).send("Everything is Working Perfectly!!!");
+app.get("/", async (req,res) => {
+    // let User = await userModel.users.findOne({username: "11B08"});
+    // let password = await decode('NCL8by0MsxkroCD/dRvpgQ==');
+    var a = await encode('user');
+    var password = await decode(a);
+
+    res.status(200).send("Everything is Working Perfectly!!! and User's Password = " + password);
 });
 
 //Starting Listening

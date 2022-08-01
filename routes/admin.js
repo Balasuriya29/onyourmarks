@@ -221,6 +221,7 @@ router.put('/teacher-standard-change/:id',adminauth,async (req,res)=>{
     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
     if(isValid) return res.send("Teacher ID is Invalid");
     await student_teacher_relation.studentTeacherRelationModel.deleteOne({
+        teacher_id : req.params.id,
         subject_id : req.body.old_subject_id,
         std_id : req.body.old_std_id,
     });

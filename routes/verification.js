@@ -1,11 +1,10 @@
 const router = require("express").Router();
-const {encode} = require("../middleware/crypt")
+const {encode,decode} = require("../middleware/crypt")
 const nodemailer = require('nodemailer');
 const config = require('config');
 const user = require("../models/usermodel");
 const Joi = require('joi');
 const adminauth = require('../middleware/adminauth');
-const crypt = require('../middleware/crypt');
 
 // To add minutes to the current time
 function AddMinutesToDate(date) {
@@ -52,9 +51,11 @@ router.post('/email/creds', adminauth, async (req, res, next) => {
       "success": true,
       "message":"Login credentials sent to user",
     }
+    console.log("After Details and User - Password: "+ User.password);
 
-    const password = await crypt.decode(User.password);
+    const password = await decode(User.password);
 
+    console.log("After Password Decode");
     var UserDetails = {
       "username":User.username,
       "password": password
@@ -101,11 +102,16 @@ router.post('/email/creds', adminauth, async (req, res, next) => {
       subject: email_subject,
       text: email_message ,
     };
+    
+    console.log("Messege"+email_message);
+    console.log("Subject"+email_subject);
 
     await transporter.verify();
-    
+
+    console.log("Verified");
+
     //Send Email
-    await transporter.sendMail(mailOptions, (err, res) => {
+    await transporter.sendMail(mailOptions, (err, response) => {
       if (err) {
           return res.status(400).send({"Status":"Failure","Details": err });
       } else {
