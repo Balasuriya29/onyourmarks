@@ -12,9 +12,11 @@ const admin = require('./routes/admin');
 const teacher = require('./routes/teacher')
 const student = require('./routes/student');
 const chat = require('./routes/chat');
+const user = require('./routes/user');
 
 //Check for jwtPrivateKey
 if(!config.get('jwtPrivateKey')){
+  console.log(config.get('jwtPrivateKey'))
   console.error('FATAL ERROR: jwtPrivateKey is not defined');
   process.exit(1);
 }
@@ -48,7 +50,7 @@ app.use('/api/admin', admin);
 app.use('/api/teacher', teacher);
 app.use('/api/student',student);
 app.use('/api/chat',chat);
-
+app.use('/api/user',user);
 
 //Default Route
 app.options('/', cors()) 

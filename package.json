@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Balasuriya29/onyourmarks#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "config": "^3.3.7",
     "cors": "^2.8.5",
     "express": "^4.18.1",
@@ -27,7 +28,9 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.4.4",
     "mongoose-morgan": "^1.0.17",
+    "nodemailer": "^6.7.7",
     "nodemon": "^2.0.19",
+    "otp-generator": "^4.0.0",
     "underscore": "^1.13.4",
     "websocket": "^1.0.34"
   }

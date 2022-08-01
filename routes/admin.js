@@ -1,6 +1,7 @@
 //Required Packages
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 
 //Required Modules
 const studentModel = require('../models/studentmodel');
@@ -13,7 +14,9 @@ const student_teacher_relation = require('../models/student-teacher-relation');
 const standardModel = require('../models/standard');
 const auth = require('../middleware/auth');
 const adminauth = require('../middleware/adminauth');
+const userModel = require('../models/usermodel');
 const _ = require('underscore');
+const crypt = require('../middleware/crypt');
 
 //Functions
 async function isNotValidId(Model,id) {
@@ -77,23 +80,45 @@ router.get("/me", auth, async (req, res) => {
 
 //POST APIs✅
 router.post("/student", adminauth, async (req, res)=>{
-    const {error} = studentModel.validateStudent(req.body);
-    if(error) return res.status(404).send(error.details[0].message);
+    const {error1} = studentModel.validateStudent(req.body);
+    if(error1) return res.status(404).send(error1.details[0].message);
+
+    const password = Math.random().toString(36).substring(2,7);
+    const hashed = await crypt.encode(password);
 
     const student = new studentModel.Student(req.body);
-    const studentToken = student.generateAuthToken();
+
     await student.save()
-        .then((v) => {
-            res.header('x-auth-token', studentToken).status(200).send(v);
+        .then(async (v1) => {
+            const user = new userModel.users({
+                username:v1.roll_no,
+                password:hashed,
+                user_id : v1._id
+            });
+            await user.save()
+            .then((v2) => {
+                var response = [];
+                response.push(v1);
+                response.push(v2);
+                res.send(response);
+            })
+            .catch((err) => {
+                res.send(err.message);
+            });
+        })
+        .catch((err) => {
+            res.send(err.message);
         });
 });
 
 router.post("/teacher", adminauth, async (req, res)=>{
-    const {error} = teacherModel.validateTeacher(req.body);
-    if(error) return res.status(404).send(error.details[0].message);
+    const {error1} = teacherModel.validateTeacher(req.body);
+    if(error1) return res.status(404).send(error1.details[0].message);
+
+    const password = Math.random().toString(36).substring(2,7);
+    const hashed = await crypt.encode(password);
 
     const teacher = new teacherModel.Teacher(req.body);
-    const teacherToken = teacher.generateAuthToken();
     await teacher.save(async (err,doc1)=>{
         if(err) return res.send(err.message);
         req.body.std_id.forEach(async element => {
@@ -106,9 +131,13 @@ router.post("/teacher", adminauth, async (req, res)=>{
                 if(err) return res.send(err.message);
             })
         });
-
-        res.header('x-auth-token',teacherToken).send(teacher);
-    
+        const user = new userModel.users({
+            username:doc1.email,
+            password:hashed,
+            user_id: doc1._id
+        });
+        user.save().catch((err) => {res.send(err.message)})
+        res.send(teacher);
     })
 });
 
@@ -365,6 +394,16 @@ router.get('/teacher/:id',adminauth,async (req,res)=>{
         res.status(404).send("Invalid id");
     }
 });
+
+router.get('/teacher',adminauth,async(req,res)=>{
+    await teacherModel.Teacher.find().then((v)=>{
+        res.send(v);
+    })
+    .catch((err)=>{
+        res.send(err.message);
+    })
+})
+
 router.get('/student/:id',adminauth,async (req,res)=>{
     try{
         const student = await studentModel.Student.findById(req.params.id).populate({
