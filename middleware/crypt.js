@@ -18,7 +18,7 @@ async function encode(string){
 }
 
 async function decode(string) {
-    let encryptedText = Buffer.from(string.encryptedData, 'hex');
+    let encryptedText = Buffer.from(string, 'hex');
     
     let decipher = crypto.createDecipheriv('aes-128-ocb', key, iv);
     let decrypted = decipher.update(encryptedText);

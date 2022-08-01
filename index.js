@@ -58,7 +58,6 @@ app.use('/api/verification',verification);
 
 //Default Route
 app.options('/', cors()) 
-
 app.get("/", (req,res) => {
     res.status(200).send("Everything is Working Perfectly!!! and User's Password = " + password);
 });
