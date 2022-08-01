@@ -1,5 +1,7 @@
 {
     "DBUserName": "",
     "DBPassword": "",
-    "jwtPrivateKey": ""
+    "jwtPrivateKey": "",
+    "Official_Mail":"",
+    "Official_Password":""
 }

@@ -13,7 +13,7 @@ const teacher = require('./routes/teacher')
 const student = require('./routes/student');
 const chat = require('./routes/chat');
 const user = require('./routes/user');
-const crypt = require('./middleware/crypt');
+const verification = require('./routes/verification');
 
 //Check for jwtPrivateKey
 if(!config.get('jwtPrivateKey')){
@@ -52,10 +52,11 @@ app.use('/api/teacher', teacher);
 app.use('/api/student',student);
 app.use('/api/chat',chat);
 app.use('/api/user',user);
+app.use('/api/verification',verification);
 
 //Default Route
 app.options('/', cors()) 
-app.get("/", async (req,res) => {
+app.get("/", (req,res) => {
     res.status(200).send("Everything is Working Perfectly!!!");
 });
 

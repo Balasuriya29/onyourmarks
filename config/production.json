@@ -1,5 +1,7 @@
 {
     "DBUserName": "OnYourMarks_DBUserName",
     "DBPassword": "OnYourMarks_DBPassword",
-    "jwtPrivateKey": "OnYourMarks_jwtPrivateKey"
+    "jwtPrivateKey": "OnYourMarks_jwtPrivateKey",
+    "Official_Mail":"OnYourMarks_Official_Mail",
+    "Official_Password":"OnYourMarks_Official_Password"
 }

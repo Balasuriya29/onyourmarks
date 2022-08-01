@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const app = express();
 
 //Required Modules
 const studentModel = require('../models/studentmodel');
@@ -84,6 +85,9 @@ router.post("/student", adminauth, async (req, res)=>{
     if(error1) return res.status(404).send(error1.details[0].message);
 
     const password = Math.random().toString(36).substring(2,7);
+    if(app.get('env') === "development"){
+        console.log(password);
+    }
     const hashed = await crypt.encode(password);
 
     const student = new studentModel.Student(req.body);
