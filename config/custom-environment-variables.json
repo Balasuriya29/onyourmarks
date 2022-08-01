@@ -4,6 +4,5 @@
     "jwtPrivateKey": "OnYourMarks_jwtPrivateKey",
     "Official_Mail":"OnYourMarks_Official_Mail",
     "Official_Password":"OnYourMarks_Official_Password",
-    "cipherKey": "OnYourMarks_cipherKey",
-    "cipherKey2": "OnYourMarks_cipherKey2"
+    "cipherKey": "OnYourMarks_cipherKey"
 }
