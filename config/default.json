@@ -4,6 +4,6 @@
     "jwtPrivateKey": "",
     "Official_Mail":"",
     "Official_Password":"",
-    "cipherKey": ""
-
+    "cipherKey": "",
+    "cipherKey2":""
 }
