@@ -102,7 +102,8 @@ router.post("/student", adminauth, async (req, res)=>{
             const user = new userModel.users({
                 username:v1.roll_no,
                 password:hashed,
-                user_id : v1._id
+                user_id : v1._id, 
+                role: "Student"
             });
             await user.save()
             .then((v2) => {
@@ -143,7 +144,8 @@ router.post("/teacher", adminauth, async (req, res)=>{
         const user = new userModel.users({
             username:doc1.email,
             password:hashed,
-            user_id: doc1._id
+            user_id: doc1._id, 
+            role: "Student"
         });
         user.save().catch((err) => {res.send(err.message)})
         res.send(teacher);
