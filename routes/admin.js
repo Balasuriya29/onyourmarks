@@ -262,7 +262,6 @@ router.put('/student/:id', adminauth,async (req,res) => {
 router.put('/subject/:id', adminauth,async (req,res) => {
     var isValid = (await isNotValidId(subjectModel.Subject,req.params.id)).valueOf();
     if(isValid) return res.send("Subject ID is Invalid");
-
     req.body.std_id.forEach( async element => {
         const studentTeacher = await student_teacher_relation.studentTeacherRelationModel({
             teacher_id:req.body.teacher,
@@ -275,7 +274,6 @@ router.put('/subject/:id', adminauth,async (req,res) => {
             res.send(err.message).status(404);
         });
     });
-    
     res.status(200).send("Updated All Subjects");
 });
 
