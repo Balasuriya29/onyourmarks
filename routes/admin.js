@@ -279,6 +279,21 @@ router.put('/subject/:id', adminauth,async (req,res) => {
     res.status(200).send("Updated All Subjects");
 });
 
+router.put('/subject-details/:id', async (req,res) => {
+    var isValid = (await isNotValidId(subjectModel.Subject,req.params.id)).valueOf();
+    if(isValid) return res.send("Subject ID is Invalid");
+
+    await subjectModel.Subject.updateOne({
+        _id : req.params.id
+    },
+        req.body,
+    {
+        new:true
+    })
+    .then((v) => res.send(v))
+    .catch((err) => res.send(err));
+});
+
 router.put('/activity/:id',adminauth,async (req,res)=>{
     const value = req.body.isVerified;
     const activity = await cocurricularactivity.coCurricularActivity.findById(req.params.id);
