@@ -79,6 +79,11 @@ router.get("/me", auth, async (req, res) => {
     res.status(200).send(user);
 });
 
+router.get("/role", auth, async (req, res) => {
+    res.send(req.user.role);
+});
+
+
 //POST APIs✅
 router.post("/student", adminauth, async (req, res)=>{
     const {error1} = studentModel.validateStudent(req.body);
@@ -279,7 +284,7 @@ router.put('/subject/:id', adminauth,async (req,res) => {
     res.status(200).send("Updated All Subjects");
 });
 
-router.put('/subject-details/:id', async (req,res) => {
+router.put('/subject-details/:id', adminauth, async (req,res) => {
     var isValid = (await isNotValidId(subjectModel.Subject,req.params.id)).valueOf();
     if(isValid) return res.send("Subject ID is Invalid");
 
