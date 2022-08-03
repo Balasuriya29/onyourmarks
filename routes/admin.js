@@ -415,9 +415,10 @@ router.get('/allstandards',async (req,res) => {
 
 router.get('/teacher/:id',adminauth,async (req,res)=>{
     try{
-        const teacher = await teacherModel.Teacher.findById(id);
+        const teacher = await teacherModel.Teacher.findById(req.params.id);
         if(!teacher) return res.status(404).send("Teacher not found");
         
+        res.send(teacher);
     }
     catch(err){
         res.status(404).send("Invalid id");
