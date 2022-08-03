@@ -31,7 +31,7 @@ router.post("/check", async (req, res) => {
     const dbpassword = await crypt.decode(user.password);
     if(!(req.body.password == dbpassword)) return res.status(400).send("Invalid Password");
     
-    const token = jwt.sign({_id : user._id, isAdmin : user.isAdmin}, config.get('jwtPrivateKey'));
+    const token = jwt.sign({_id : user.user_id, isAdmin : user.isAdmin, role : user.role}, config.get('jwtPrivateKey'));
     res.header("x-auth-token", token).status(200).send(user)
 });
 
