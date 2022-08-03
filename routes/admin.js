@@ -145,7 +145,7 @@ router.post("/teacher", adminauth, async (req, res)=>{
             username:doc1.email,
             password:hashed,
             user_id: doc1._id, 
-            role: "Student"
+            role: "Teacher"
         });
         user.save().catch((err) => {res.send(err.message)})
         res.send(teacher);
