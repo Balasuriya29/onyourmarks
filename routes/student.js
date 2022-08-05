@@ -12,6 +12,7 @@ const chatmodel = require('../models/chatmodel');
 const messagemodel = require('../models/messagemodel');
 const {Teacher} = require('../models/teachermodel');
 const marksmodel = require('../models/marksmodel');
+const {interestModel, validateInterests} = require('../models/interestmodel');
 
 //Functions
 function hasAuthority(role) {
@@ -117,18 +118,54 @@ router.get('/mymarks',auth,async(req,res)=>{
 
 });
 
+router.get('/myinterests',auth,async (req,res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    await interestModel.find({
+        student_id : req.user._id
+    })
+    .then((v) => {
+        res.send(v);
+    })
+    .catch((err) => {
+        res.status(400).send(err.message);
+    });
+});
+
 
 //POST APIs
 router.post('/cca', auth, async (req,res)=>{
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
-    const {error} = coCurricularActivity.validateCoCurricularActivity(req.body);
-    if(error) return res.send(error.message);
+    const {error1} = coCurricularActivity.validateCoCurricularActivity(req.body);
+    if(error1) return res.status(404).send(error1.details[0].message);
 
     const ccaModel = coCurricularActivity.coCurricularActivity(req.body);
     await ccaModel.save().then((v)=>{
         res.status(200).send(v);
     });
     
+});
+
+router.put('/interests', auth, async (req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+    
+    const {error1} = validateInterests(req.body);
+    if(error1) return res.status(404).send(error1.details[0].message);
+
+    await interestModel.updateOne({
+        student_id:req.user._id
+    },
+        req.body,
+        {
+            upsert : true
+        }
+    )    
+    .then((v) => {
+        res.send(v);
+    })
+    .catch((err) => {
+        res.status(400).send(err.message)
+    });
 });
 
 //DELETE APIs
