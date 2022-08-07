@@ -468,7 +468,7 @@ router.get('/cca/:condition', adminauth,async(req,res)=>{
 });
 
 
-router.get('/cca/:std_id',adminauth,async(req,res)=>{
+router.get('/cca/std/:std_id',adminauth,async(req,res)=>{
     cocurricularactivity.coCurricularActivity.find({
         student_id : req.params.std_id
     }).populate("student_id",["first_name","last_name","roll_no"])
