@@ -9,7 +9,6 @@ const student_teacher_relation =  require('../models/student-teacher-relation');
 const exam_std_relation = require('../models/exam-std-relation');
 const auth = require('../middleware/auth');
 const chatmodel = require('../models/chatmodel');
-const messagemodel = require('../models/messagemodel');
 const {Teacher} = require('../models/teachermodel');
 const marksmodel = require('../models/marksmodel');
 const {interestModel, validateInterests} = require('../models/interestmodel');
