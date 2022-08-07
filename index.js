@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const mongoose_morgan = require('mongoose-morgan');
 const config = require('config');
 const cors = require('cors');
+const expressListRoutes = require('express-list-routes');
 
 //Importing Files
 const connection = require('./connection');
@@ -58,9 +59,12 @@ app.use('/api/verification',verification);
 
 //Default Route
 app.options('/', cors()) 
-app.get("/", (req,res) => {
-    res.status(200).send("Everything is Working Perfectly!!! and User's Password = " + password);
+app.get("/",(req,res) => {
+    expressListRoutes(app, { prefix: '/api/admin' });
+    res.status(200).send("Everything is Working Perfectly!!!")
 });
+
+
 
 //Starting Listening
 const PORT = process.env.PORT || 80;
