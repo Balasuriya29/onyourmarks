@@ -424,7 +424,17 @@ router.get('/teacher',adminauth,async(req,res)=>{
     .catch((err)=>{
         res.send(err.message);
     })
-})
+});
+
+
+router.get('/teacher-std-sub/:id',adminauth,async (req,res)=>{
+    var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
+    if(isValid) return res.send("Teacher ID is Invalid");
+    const teacher_std_details = await student_teacher_relation.studentTeacherRelationModel.find({
+        teacher_id : req.params.id
+    }).populate('subject_id').populate('std_id',['std_name']);
+    res.send(teacher_std_details);
+});
 
 router.get('/student/:id',adminauth,async (req,res)=>{
     try{
@@ -456,6 +466,13 @@ router.get('/cca/:condition', adminauth,async(req,res)=>{
             .populate('student_id',['roll_no','first_name','last_name']);
     res.send(cca);
 });
+
+
+router.get('/cca/:std_id',adminauth,async(req,res)=>{
+    cocurricularactivity.coCurricularActivity.find({
+        student_id : req.params.std_id
+    }).populate("student_id",["first_name","last_name","roll_no"])
+})
 
 router.get('/subjects/unassigned',adminauth, async(req,res)=>{
     const subjects = await student_teacher_relation.studentTeacherRelationModel.find().select('subject_id');

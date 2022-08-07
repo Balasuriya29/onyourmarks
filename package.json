@@ -20,6 +20,7 @@
   "homepage": "https://github.com/Balasuriya29/onyourmarks#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "child_process": "^1.0.2",
     "config": "^3.3.7",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
