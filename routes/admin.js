@@ -400,6 +400,21 @@ router.get('/allexams',async (req,res) => {
     }
 })
 
+router.get('/allcca',async(req,res)=>{
+    await cocurricularactivity.coCurricularActivity
+    .find()
+    .populate({
+        path : "student_id",
+        select : "roll_no first_name last_name",
+        populate : {
+            path : "std_id",
+            select : "std_name",
+        },
+    })
+    .then((v) => res.send(v))
+    .catch((err)=>res.send(err.message));
+});
+
 router.get('/allstandards',async (req,res) => {
     try {
         const standards = await standardModel.standardModel
@@ -476,12 +491,6 @@ router.get('/cca/:condition', adminauth,async(req,res)=>{
 });
 
 
-router.get('/cca/std/:std_id',adminauth,async(req,res)=>{
-    cocurricularactivity.coCurricularActivity.find({
-        student_id : req.params.std_id
-    }).populate("student_id",["first_name","last_name","roll_no"]).then((v) => res.send(v)).catch((err)=>res.send(err.message));
-
-})
 
 router.get('/subjects/unassigned',adminauth, async(req,res)=>{
     const subjects = await student_teacher_relation.studentTeacherRelationModel.find().select('subject_id');
