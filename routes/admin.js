@@ -479,7 +479,8 @@ router.get('/cca/:condition', adminauth,async(req,res)=>{
 router.get('/cca/std/:std_id',adminauth,async(req,res)=>{
     cocurricularactivity.coCurricularActivity.find({
         student_id : req.params.std_id
-    }).populate("student_id",["first_name","last_name","roll_no"])
+    }).populate("student_id",["first_name","last_name","roll_no"]).then((v) => res.send(v)).catch((err)=>res.send(err.message));
+
 })
 
 router.get('/subjects/unassigned',adminauth, async(req,res)=>{
