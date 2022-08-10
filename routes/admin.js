@@ -300,35 +300,11 @@ router.put('/subject-details/:id', adminauth, async (req,res) => {
 });
 
 router.put('/activity/:id',adminauth,async (req,res)=>{
-    const value = req.body.isVerified;
     const activity = await cocurricularactivity.coCurricularActivity.findById(req.params.id);
-    console.log(activity);
-    if(value === "accepted"){
-        console.log('accepted');
-        if(activity['status'] === 'participated'){
-            console.log(activity['status']);
-        await studentModel.Student.findByIdAndUpdate(activity['student_id'],{
-                $inc : {
-                    "cca.participated":1
-                }
-            })
-        }
-        else{
-            await studentModel.Student.findByIdAndUpdate(activity['student_id'],{
-                $inc : {
-                    "cca.winner":1
-                }
-            })
-        }
-    }
-    await cocurricularactivity.coCurricularActivity.findOneAndUpdate(
-        {_id:req.params.id},
-        {isVerified : req.body.isVerified}).then((v)=>{
-            res.status(200).send("Activity updated");
-        }
-        ).catch((err)=>{
-            res.send(err.message);
-        })
+    activity["isVerified"] = req.body.isVerfied;
+    activity.save().then((v)=>{
+        res.send(v);
+    });
 });
 
 router.put('/standard/:id', adminauth,async (req,res)=>{
