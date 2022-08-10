@@ -142,7 +142,6 @@ router.post('/cca', auth, async (req,res)=>{
     await ccaModel.save().then((v)=>{
         res.status(200).send(v);
     });
-    
 });
 
 router.put('/interests', auth, async (req, res) => {
