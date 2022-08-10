@@ -301,7 +301,7 @@ router.put('/subject-details/:id', adminauth, async (req,res) => {
 
 router.put('/activity/:id',adminauth,async (req,res)=>{
     const activity = await cocurricularactivity.coCurricularActivity.findById(req.params.id);
-    activity["isVerified"] = req.body.isVerfied;
+    activity.isVerified = req.body.isVerified;
     activity.save().then((v)=>{
         res.send(v);
     });
