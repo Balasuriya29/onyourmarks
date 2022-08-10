@@ -84,11 +84,9 @@ app.use('/api/verification',verification);
 //Default Route
 app.options('/', cors()) 
 app.get("/",(req,res) => {
-    expressListRoutes(app, { prefix: '/api/admin' });
-    res.status(200).send("Everything is Working Perfectly!!!")
+    // const routes = expressListRoutes(app, { prefix: '/api/admin' });
+    res.status(200).send("Everything is Working Perfectly!!!"+routes)
 });
-
-
 
 //Starting Listening
 const PORT = process.env.PORT || 80;
