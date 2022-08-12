@@ -12,6 +12,7 @@ const chatmodel = require('../models/chatmodel');
 const {Teacher} = require('../models/teachermodel');
 const marksmodel = require('../models/marksmodel');
 const {interestModel, validateInterests} = require('../models/interestmodel');
+const { feedback_model, feedback } = require('../models/feedbackmodel');
 
 //Functions
 function hasAuthority(role) {
@@ -144,6 +145,20 @@ router.post('/cca', auth, async (req,res)=>{
     });
 });
 
+router.post('/feedback/:id', auth , async (req,res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    const feeback = await feedback_model(req.body);
+
+    feedback.save().then((v) => {
+        res.send(v)
+    })
+    .catch((err) => {
+        res.status(400).send(err.message);
+    })
+});
+
+//PUT APIs
 router.put('/interests', auth, async (req, res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     
