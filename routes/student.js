@@ -148,7 +148,7 @@ router.post('/cca', auth, async (req,res)=>{
 router.post('/feedback/:id', auth , async (req,res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
 
-    const feeback = await feedback_model(req.body);
+    const feedback = await feedback_model(req.body);
 
     feedback.save().then((v) => {
         res.send(v)
