@@ -20,6 +20,6 @@ const feedback = mongoose.Schema({
 });
 
 //Creating Model
-const feedback_model = mongoose.model("newFeedback",attendance,'feedback');
+const feedback_model = mongoose.model("newFeedback",feedback,'feedback');
 
 module.exports = {feedback, feedback_model};
