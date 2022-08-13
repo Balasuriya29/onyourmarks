@@ -47,7 +47,7 @@ router.post('/marks/:id', auth,async (req, res) => {
     })
 });
 
-router.post('/student-attendance/:id',auth, async (req, res) => {
+router.post('/add-student-attendance/:id',auth, async (req, res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
 
     await attendance_model.updateOne({
@@ -56,6 +56,27 @@ router.post('/student-attendance/:id',auth, async (req, res) => {
     {
         $push : {
             Dates : req.body.Dates
+        }
+    },
+    {
+        upsert : true
+    }).then((v) => {
+        res.send(v);
+    })
+    .catch((err) => {
+        res.status(400).send(err.message);
+    });
+});
+
+router.post('/remove-student-attendance/:id',auth, async (req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    await attendance_model.updateOne({
+        student_id : req.params.id
+    },
+    {
+        $pull : {
+            Dates : Date.parse(req.body.Dates)
         }
     },
     {
