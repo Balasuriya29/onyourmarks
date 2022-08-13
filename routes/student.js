@@ -78,7 +78,7 @@ router.get('/my-attendance/:id',auth, async (req, res) => {
     await attendance_model.find({
         student_id : req.params.id
     })
-    .populate('Dates')
+    .select('Dates')
     .then((v) => {
         res.send(v);
     })
