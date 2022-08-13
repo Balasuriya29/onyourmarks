@@ -8,7 +8,14 @@ const attendance = mongoose.Schema({
         type:mongoose.Types.ObjectId,
         ref:'newStudent'
     },
-    Dates : [Date]
+    std_id :{
+        type:mongoose.Types.ObjectId,
+        ref:'newStandard'
+    },
+    Dates : {
+        type : [Date],
+        default : []
+    }
 });
 
 //Creating Model

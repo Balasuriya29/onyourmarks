@@ -94,7 +94,7 @@ router.get('/student-attendance/:id',auth, async (req, res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
 
     await attendance_model.find({
-        student_id: req.params.id
+        std_id : req.params.id
     })
     .then((v) => {
         res.send(v);

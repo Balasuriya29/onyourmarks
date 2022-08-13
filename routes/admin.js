@@ -18,6 +18,7 @@ const adminauth = require('../middleware/adminauth');
 const userModel = require('../models/usermodel');
 const _ = require('underscore');
 const crypt = require('../middleware/crypt');
+const { attendance_model } = require('../models/attendancemodel');
 
 //Functions
 async function isNotValidId(Model,id) {
@@ -106,11 +107,24 @@ router.post("/student", adminauth, async (req, res)=>{
                 role: "Student"
             });
             await user.save()
-            .then((v2) => {
-                var response = [];
-                response.push(v1);
-                response.push(v2);
-                res.send(response);
+            .then(async (v2) => {
+                const attendance = new attendance_model({
+                    student_id : v1._id,
+                    Dates : [],
+                    std_id : req.body.std_id
+                });
+
+                await attendance.save()
+                .then((v3) => {
+                    var response = [];
+                    response.push(v1);
+                    response.push(v2);
+                    response.push(v3);
+                    res.send(response);
+                })
+                .catch((err) => {
+                    res.send(err.message);
+                });
             })
             .catch((err) => {
                 res.send(err.message);
