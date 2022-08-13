@@ -367,7 +367,13 @@ router.get('/allexams',async (req,res) => {
     try {
         const exams = await exam_std_relation.examStandardModel
                         .find()
-                        .populate('exam_id std');
+                        .populate({
+                            path : 'exam_id',
+                            populate : {
+                                path : 'subjects',
+                            }
+                        })
+                        .populate('std' , 'std_name');
         if(!exams) return res.status(404).send("There is no exam found");
         res.send(exams);
 
