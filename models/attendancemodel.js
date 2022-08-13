@@ -1,6 +1,5 @@
 //Required Packages
 const mongoose = require('mongoose');
-const joi = require("joi");
 
 //Creating Schema
 const attendance = mongoose.Schema({
@@ -13,7 +12,7 @@ const attendance = mongoose.Schema({
         ref:'newStandard'
     },
     Dates : {
-        type : [Date],
+        type : [String],
         default : []
     }
 });

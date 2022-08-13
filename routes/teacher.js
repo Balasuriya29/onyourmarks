@@ -76,7 +76,7 @@ router.post('/remove-student-attendance/:id',auth, async (req, res) => {
     },
     {
         $pull : {
-            Dates : Date.parse(req.body.Dates)
+            Dates : req.body.Dates
         }
     },
     {
