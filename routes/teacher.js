@@ -97,6 +97,7 @@ router.get('/student-attendance/:id',auth, async (req, res) => {
         std_id : req.params.id
     })
     .populate('student_id', 'first_name last_name')
+    .populate('std_id', 'std_name')
     .then((v) => {
         res.send(v);
     })
