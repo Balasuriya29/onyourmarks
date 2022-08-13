@@ -96,6 +96,7 @@ router.get('/student-attendance/:id',auth, async (req, res) => {
     await attendance_model.find({
         std_id : req.params.id
     })
+    .populate('student_id', 'first_name last_name')
     .then((v) => {
         res.send(v);
     })
