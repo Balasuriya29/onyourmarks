@@ -85,7 +85,7 @@ app.use('/api/verification',verification);
 app.options('/', cors()) 
 app.get("/",(req,res) => {
     // const routes = expressListRoutes(app, { prefix: '/api/admin' });
-    res.status(200).send("Everything is Working Perfectly!!!"+routes)
+    res.status(200).send("Everything is Working Perfectly!!!")
 });
 
 //Starting Listening
