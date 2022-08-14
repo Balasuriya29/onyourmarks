@@ -18,6 +18,7 @@ const adminauth = require('../middleware/adminauth');
 const userModel = require('../models/usermodel');
 const _ = require('underscore');
 const crypt = require('../middleware/crypt');
+const eventModel = require('../models/eventmodel');
 const { attendance_model } = require('../models/attendancemodel');
 
 //Functions
@@ -83,7 +84,6 @@ router.get("/me", auth, async (req, res) => {
 router.get("/role", auth, async (req, res) => {
     res.send(req.user.role);
 });
-
 
 //POST APIs✅
 router.post("/student", adminauth, async (req, res)=>{
@@ -221,6 +221,22 @@ router.post('/addStandardToTeacher/:id',adminauth, async (req,res)=>{
     
     newTeacherStandard.save();
     res.send(newTeacherStandard);
+});
+
+router.post('/event',adminauth, async(req,res)=>{
+    const {error} = eventModel.validateEvent(req.body);
+    if(error){
+        res.send(error.details[0].message);
+        return;
+    }
+    const event = eventModel.Event(req.body);
+    await event.save()
+    .then((v)=>{
+        res.send(v);
+    })
+    .catch((err)=>{
+        res.send(err.message);
+    })
 });
 
 //UPDATE APIs✅
@@ -486,8 +502,6 @@ router.get('/cca/:condition', adminauth,async(req,res)=>{
     res.send(cca);
 });
 
-
-
 router.get('/subjects/unassigned',adminauth, async(req,res)=>{
     const subjects = await student_teacher_relation.studentTeacherRelationModel.find().select('subject_id');
     const subjectIds = [];
@@ -504,6 +518,11 @@ router.get('/subjects/unassigned',adminauth, async(req,res)=>{
     )
 
     res.send(unassignedSubjects);
+});
+
+router.get('/events',async(req,res)=>{
+    const events = await eventModel.Event.find();
+    res.send(events);
 })
 
 //DELETE APIs
