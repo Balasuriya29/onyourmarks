@@ -19,6 +19,7 @@ const userModel = require('../models/usermodel');
 const _ = require('underscore');
 const crypt = require('../middleware/crypt');
 const eventModel = require('../models/eventmodel');
+const { attendance_model } = require('../models/attendancemodel');
 
 //Functions
 async function isNotValidId(Model,id) {
@@ -106,11 +107,24 @@ router.post("/student", adminauth, async (req, res)=>{
                 role: "Student"
             });
             await user.save()
-            .then((v2) => {
-                var response = [];
-                response.push(v1);
-                response.push(v2);
-                res.send(response);
+            .then(async (v2) => {
+                const attendance = new attendance_model({
+                    student_id : v1._id,
+                    Dates : [],
+                    std_id : req.body.std_id
+                });
+
+                await attendance.save()
+                .then((v3) => {
+                    var response = [];
+                    response.push(v1);
+                    response.push(v2);
+                    response.push(v3);
+                    res.send(response);
+                })
+                .catch((err) => {
+                    res.send(err.message);
+                });
             })
             .catch((err) => {
                 res.send(err.message);
@@ -381,9 +395,15 @@ router.get('/allsubjects',async (req,res) => {
 
 router.get('/allexams',async (req,res) => {
     try {
-        const exams = await examModel.Exam
+        const exams = await exam_std_relation.examStandardModel
                         .find()
-                        .populate('subjects');
+                        .populate({
+                            path : 'exam_id',
+                            populate : {
+                                path : 'subjects',
+                            }
+                        })
+                        .populate('std' , 'std_name');
         if(!exams) return res.status(404).send("There is no exam found");
         res.send(exams);
 

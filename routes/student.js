@@ -12,6 +12,8 @@ const chatmodel = require('../models/chatmodel');
 const {Teacher} = require('../models/teachermodel');
 const marksmodel = require('../models/marksmodel');
 const {interestModel, validateInterests} = require('../models/interestmodel');
+const { feedback_model, feedback } = require('../models/feedbackmodel');
+const { attendance_model } = require('../models/attendancemodel');
 
 //Functions
 function hasAuthority(role) {
@@ -68,6 +70,21 @@ router.get('/myexams/:std_id', auth, async(req,res) => {
         res.status(400).send(`Error: ${err.message}`);
     })
 
+});
+
+router.get('/my-attendance/:id',auth, async (req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    await attendance_model.find({
+        student_id : req.params.id
+    })
+    .select('Dates')
+    .then((v) => {
+        res.send(v);
+    })
+    .catch((err) => {
+        res.status(400).send(err.message);
+    });
 });
 
 router.get("/mychat",auth,async (req,res)=>{
@@ -142,9 +159,22 @@ router.post('/cca', auth, async (req,res)=>{
     await ccaModel.save().then((v)=>{
         res.status(200).send(v);
     });
-    
 });
 
+router.post('/feedback/:id', auth , async (req,res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    const feedback = await feedback_model(req.body);
+
+    feedback.save().then((v) => {
+        res.send(v)
+    })
+    .catch((err) => {
+        res.status(400).send(err.message);
+    })
+});
+
+//PUT APIs
 router.put('/interests', auth, async (req, res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     

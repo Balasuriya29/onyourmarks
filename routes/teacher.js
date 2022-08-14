@@ -10,6 +10,7 @@ const auth = require('../middleware/auth');
 const chatmodel = require('../models/chatmodel');
 const messagemodel = require('../models/messagemodel');
 const { examStandardModel } = require('../models/exam-std-relation');
+const { attendance_model } = require('../models/attendancemodel');
 
 //Functions
 function hasAuthority(role) {
@@ -46,7 +47,65 @@ router.post('/marks/:id', auth,async (req, res) => {
     })
 });
 
+router.post('/add-student-attendance/:id',auth, async (req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    await attendance_model.updateOne({
+        student_id : req.params.id
+    },
+    {
+        $push : {
+            Dates : req.body.Dates
+        }
+    },
+    {
+        upsert : true
+    }).then((v) => {
+        res.send(v);
+    })
+    .catch((err) => {
+        res.status(400).send(err.message);
+    });
+});
+
+router.post('/remove-student-attendance/:id',auth, async (req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    await attendance_model.updateOne({
+        student_id : req.params.id
+    },
+    {
+        $pull : {
+            Dates : req.body.Dates
+        }
+    },
+    {
+        upsert : true
+    }).then((v) => {
+        res.send(v);
+    })
+    .catch((err) => {
+        res.status(400).send(err.message);
+    });
+});
+
 //GET APIs
+router.get('/student-attendance/:id',auth, async (req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    await attendance_model.find({
+        std_id : req.params.id
+    })
+    .populate('student_id', 'first_name last_name')
+    .populate('std_id', 'std_name')
+    .then((v) => {
+        res.send(v);
+    })
+    .catch((err) => {
+        res.status(400).send(err.message);
+    });
+});
+
 router.get('/mystudents/:std_id',auth, async (req,res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
 
