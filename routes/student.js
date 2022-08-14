@@ -116,14 +116,13 @@ router.get('/teachers-without-chat',auth,async(req,res)=>{
     })
 });
 
-
 router.get('/mymarks',auth,async(req,res)=>{
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     const student_id = req.user._id;
     await marksmodel.markmodel.find({
         student_id : student_id
     })
-    .populate('exam_id',['exam_name'])
+    .populate('exam_id',['exam_name', 'dates'])
     .populate('subject_id',['sub_name','total_marks'])
     .then((v)=>{
         res.send(v);
