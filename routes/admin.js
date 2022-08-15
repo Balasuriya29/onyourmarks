@@ -156,7 +156,7 @@ router.post("/teacher", adminauth, async (req, res)=>{
             })
         });
         const user = new userModel.users({
-            username:doc1.email,
+            username:doc1.faultyId,
             password:hashed,
             user_id: doc1._id, 
             role: "Teacher"
@@ -244,16 +244,12 @@ router.put('/teacher-details/:id', adminauth,async (req,res) => {
     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
     if(isValid) return res.send("Teacher ID is Invalid");
 
-    const teacherToBeUpdated = await teacherModel.Teacher.findOneAndUpdate(
-        {
-        _id : req.params.id
-        },
-        req.body,
-        {
-            new: true,
-        }
-    );
-    res.status(200).send(teacherToBeUpdated);
+    const teacherToBeUpdated = await teacherModel.Teacher.findById(req.params.id);
+    teacherToBeUpdated.facultyId = req.body.facultyId;
+
+    teacherToBeUpdated.save().then((v) => {
+        res.send(v);
+    }).catch((err) => res.status(400).send(err.message));
 });
 
 router.put('/teacher-standard-change/:id',adminauth,async (req,res)=>{
@@ -582,3 +578,4 @@ router.delete("/exam/:id",adminauth,async (req,res)=>{
 })
 
 module.exports = router;
+
