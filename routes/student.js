@@ -43,7 +43,7 @@ router.get('/myteachers/:std_id', auth, async(req,res)=>{
     .find({
         std_id : req.params.std_id
     })
-    .populate('teacher_id',['name'])
+    .populate('teacher_id',['name', "faultyId"])
     .populate('subject_id',['sub_name', 'total_marks'])
     .then((v)=>{
         res.send(v);
