@@ -33,7 +33,7 @@ var corsOption = {
   };
 
 
-router.use(cors(corsOption));  
+router.use(cors());  
 
 //GET APIs
 router.get('/mycca/:condition', auth, async(req,res)=>{
