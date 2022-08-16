@@ -30,7 +30,9 @@ var corsOption = {
   exposedHeaders: ['x-auth-token']
 };
 
-app.use(cors());
+app.use(cors(
+  corsOption
+));
 
 //Check for jwtPrivateKey
 if(!config.get('jwtPrivateKey')){
