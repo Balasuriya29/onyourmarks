@@ -188,7 +188,7 @@ router.post('/feedback/:id', auth , async (req,res) => {
     })
 });
 
-router.post('/event',adminauth, async(req,res)=>{
+router.post('/event', async(req,res)=>{
     const {error} = eventModel.validateEvent(req.body);
     if(error){
         res.send(error.details[0].message);
