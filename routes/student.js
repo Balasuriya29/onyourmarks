@@ -31,8 +31,9 @@ var corsOption = {
     allowedHeaders: 'Content-Type,x-auth-token',
     exposedHeaders: ['x-auth-token']
   };
-  
-app.use(cors(corsOption));  
+
+
+router.use(cors(corsOption));  
 
 //GET APIs
 router.get('/mycca/:condition', auth, async(req,res)=>{
