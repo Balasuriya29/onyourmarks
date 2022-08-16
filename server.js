@@ -30,9 +30,13 @@ var corsOption = {
   exposedHeaders: ['x-auth-token']
 };
 
-app.use(cors(
-  corsOption
-));
+app.use(cors());
+
+// app.options('/api/student/event',function (req,res){
+//   res.setHeader("Access-Control-Allow-Origin","*");
+//   res.setHeader("Access-Control-Allow-Methods","*");
+//   res.setHeader("Access-Control-Allow-Headers","*");
+// })
 
 //Check for jwtPrivateKey
 if(!config.get('jwtPrivateKey')){
