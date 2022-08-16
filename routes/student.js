@@ -4,6 +4,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 // Importing modules
+const adminauth = require('../middleware/adminauth');
 const coCurricularActivity = require('../models/cocurricularactivity');
 const student_teacher_relation =  require('../models/student-teacher-relation');
 const exam_std_relation = require('../models/exam-std-relation');
