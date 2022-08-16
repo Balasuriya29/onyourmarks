@@ -37,7 +37,7 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 var corsOption = {
-  origin: false,
+  origin: "*",
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: 'Content-Type,x-auth-token',
