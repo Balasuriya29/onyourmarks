@@ -83,13 +83,6 @@ app.use('/api/verification',verification);
 
 //Default Route
 app.options('/', cors());
-app.options('/api/admin',cors(corsOption));
-
-app.use(function (req,res,next) {
-  res.header("Access-Control-Allow-Origin","*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
 
 app.get("/",(req,res) => {
     // expressListRoutes(app, { prefix: '/api/admin' });
