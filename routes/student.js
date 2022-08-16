@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 // Importing modules
 const adminauth = require('../middleware/adminauth');
@@ -22,6 +23,16 @@ const eventModel = require('../models/eventmodel');
 function hasAuthority(role) {
     return role === 'Student';
 }
+
+var corsOption = {
+    origin: "*",
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    allowedHeaders: 'Content-Type,x-auth-token',
+    exposedHeaders: ['x-auth-token']
+  };
+  
+app.use(cors(corsOption));  
 
 //GET APIs
 router.get('/mycca/:condition', auth, async(req,res)=>{
