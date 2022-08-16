@@ -16,6 +16,7 @@ const {interestModel, validateInterests} = require('../models/interestmodel');
 const { feedback_model, feedback } = require('../models/feedbackmodel');
 const { attendance_model } = require('../models/attendancemodel');
 const { Student } = require('../models/studentmodel');
+const eventModel = require('../models/eventmodel');
 
 //Functions
 function hasAuthority(role) {
@@ -176,20 +177,14 @@ router.post('/feedback/:id', auth , async (req,res) => {
 });
 
 router.post('/event',adminauth, async(req,res)=>{
-    // console.log("Started");
     const {error} = eventModel.validateEvent(req.body);
-    // console.log("Validated");
     if(error){
-        // console.log("Error");
         res.send(error.details[0].message);
         return;
     }
-    // console.log("No Error");
     const event = eventModel.Event(req.body);
-    // console.log("created");
     await event.save()
     .then((v)=>{
-        // console.log("saved");
         res.send(v);
     })
     .catch((err)=>{
