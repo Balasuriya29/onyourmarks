@@ -223,27 +223,6 @@ router.post('/addStandardToTeacher/:id',adminauth, async (req,res)=>{
     res.send(newTeacherStandard);
 });
 
-router.post('/event',adminauth, async(req,res)=>{
-    console.log("Started");
-    const {error} = eventModel.validateEvent(req.body);
-    console.log("Validated");
-    if(error){
-        console.log("Error");
-        res.send(error.details[0].message);
-        return;
-    }
-    console.log("No Error");
-    const event = eventModel.Event(req.body);
-    console.log("created");
-    await event.save()
-    .then((v)=>{
-        console.log("saved");
-        res.send(v);
-    })
-    .catch((err)=>{
-        res.send(err.message);
-    })
-});
 
 //UPDATE APIs✅
 router.put('/teacher-details/:id', adminauth,async (req,res) => {

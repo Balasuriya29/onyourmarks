@@ -174,6 +174,29 @@ router.post('/feedback/:id', auth , async (req,res) => {
     })
 });
 
+router.post('/event',adminauth, async(req,res)=>{
+    // console.log("Started");
+    const {error} = eventModel.validateEvent(req.body);
+    // console.log("Validated");
+    if(error){
+        // console.log("Error");
+        res.send(error.details[0].message);
+        return;
+    }
+    // console.log("No Error");
+    const event = eventModel.Event(req.body);
+    // console.log("created");
+    await event.save()
+    .then((v)=>{
+        // console.log("saved");
+        res.send(v);
+    })
+    .catch((err)=>{
+        res.send(err.message);
+    })
+});
+
+
 //PUT APIs
 router.put('/interests', auth, async (req, res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
