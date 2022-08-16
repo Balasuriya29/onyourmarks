@@ -30,7 +30,7 @@ var corsOption = {
   exposedHeaders: ['x-auth-token']
 };
 
-app.use(cors(corsOption));
+app.use(cors());
 
 //Check for jwtPrivateKey
 if(!config.get('jwtPrivateKey')){
@@ -80,8 +80,6 @@ app.use('/api/user',user);
 app.use('/api/verification',verification);
 
 //Default Route
-app.options('/', cors());
-
 app.get("/",(req,res) => {
     // expressListRoutes(app, { prefix: '/api/admin' });
     res.status(200).send("Everything is Working Perfectly!!!")
