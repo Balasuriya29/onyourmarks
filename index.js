@@ -82,7 +82,8 @@ app.use('/api/user',user);
 app.use('/api/verification',verification);
 
 //Default Route
-app.options('/', cors()) 
+app.options('/', cors()) ;
+app.options('/api/admin',cors());
 app.get("/",(req,res) => {
     expressListRoutes(app, { prefix: '/api/admin' });
     res.status(200).send("Everything is Working Perfectly!!!")

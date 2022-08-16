@@ -4,7 +4,7 @@ const Joi = require('joi');
 const eventSchema = new mongoose.Schema({
     event_name : String,
     event_description : String,
-    banner_img_url : String,
+    banner_img_url : Uint8Array,
     start_date : Date,
     end_date : Date,
 });
@@ -15,7 +15,7 @@ function validateEvent(event) {
     const tempschema = Joi.object({
         event_name: Joi.string().required(),
         event_description: Joi.string().required(),
-        banner_img_url:Joi.string().required(),
+        banner_img_url:Joi.required(),
         start_date:Joi.date().required(),
         end_date:Joi.date().required(),
     });
