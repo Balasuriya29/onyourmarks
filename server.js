@@ -18,20 +18,6 @@ const chat = require('./routes/chat');
 const user = require('./routes/user');
 const verification = require('./routes/verification');
 
-//Check for jwtPrivateKey
-if(!config.get('jwtPrivateKey')){
-  console.log(config.get('jwtPrivateKey'))
-  console.error('FATAL ERROR: jwtPrivateKey is not defined');
-  process.exit(1);
-}
-
-
-
-
-//Connection to MongoDB
-const connectionString = `mongodb+srv://${config.get('DBUserName')}:${config.get('DBPassword')}@cluster0.dfr13.mongodb.net/OnYourMarks?retryWrites=true&w=majority`;
-connection.connectDB(connectionString,"OnYourMarks");
-
 //Setting certain packages
 const app = express();
 app.use(express.json());
@@ -43,7 +29,19 @@ var corsOption = {
   allowedHeaders: 'Content-Type,x-auth-token',
   exposedHeaders: ['x-auth-token']
 };
+
 app.use(cors(corsOption));
+
+//Check for jwtPrivateKey
+if(!config.get('jwtPrivateKey')){
+  console.log(config.get('jwtPrivateKey'))
+  console.error('FATAL ERROR: jwtPrivateKey is not defined');
+  process.exit(1);
+}
+
+//Connection to MongoDB
+const connectionString = `mongodb+srv://${config.get('DBUserName')}:${config.get('DBPassword')}@cluster0.dfr13.mongodb.net/OnYourMarks?retryWrites=true&w=majority`;
+connection.connectDB(connectionString,"OnYourMarks");
 
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({
