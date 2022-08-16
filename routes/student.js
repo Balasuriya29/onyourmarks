@@ -14,6 +14,7 @@ const marksmodel = require('../models/marksmodel');
 const {interestModel, validateInterests} = require('../models/interestmodel');
 const { feedback_model, feedback } = require('../models/feedbackmodel');
 const { attendance_model } = require('../models/attendancemodel');
+const { Student } = require('../models/studentmodel');
 
 //Functions
 function hasAuthority(role) {
