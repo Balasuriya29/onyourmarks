@@ -231,7 +231,9 @@ router.post('/addStandardToTeacher/:id',adminauth, async (req,res)=>{
 });
 
 
-router.post('/event', async(req,res)=>{
+router.post('/event', cors({
+    origin : "*"
+}),async(req,res)=>{
     const {error} = eventModel.validateEvent(req.body);
     if(error){
         res.send(error.details[0].message);
