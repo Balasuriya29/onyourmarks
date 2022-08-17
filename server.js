@@ -41,7 +41,7 @@ app.use(helmet());
 //   exposedHeaders: ['x-auth-token']
 // };
 app.use(cors({
-  origin : "http://localhost:52687/#/"
+  origin : "http://localhost:52687/"
 }));
 
 if(app.get('env') === "development"){
