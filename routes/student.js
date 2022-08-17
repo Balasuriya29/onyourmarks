@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const cors = require('cors');
 
 // Importing modules
 const adminauth = require('../middleware/adminauth');
@@ -23,17 +22,6 @@ const eventModel = require('../models/eventmodel');
 function hasAuthority(role) {
     return role === 'Student';
 }
-
-var corsOption = {
-    origin: "*",
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-    allowedHeaders: 'Content-Type,x-auth-token',
-    exposedHeaders: ['x-auth-token']
-  };
-
-
-// router.use(cors());  
 
 router.options('/api/student/event',function (req,res){
     res.setHeader("Access-Control-Allow-Origin","*");
@@ -193,23 +181,6 @@ router.post('/feedback/:id', auth , async (req,res) => {
         res.status(400).send(err.message);
     })
 });
-
-router.post('/event', async(req,res)=>{
-    const {error} = eventModel.validateEvent(req.body);
-    if(error){
-        res.send(error.details[0].message);
-        return;
-    }
-    const event = eventModel.Event(req.body);
-    await event.save()
-    .then((v)=>{
-        res.send(v);
-    })
-    .catch((err)=>{
-        res.send(err.message);
-    })
-});
-
 
 //PUT APIs
 router.put('/interests', auth, async (req, res) => {

@@ -224,6 +224,22 @@ router.post('/addStandardToTeacher/:id',adminauth, async (req,res)=>{
 });
 
 
+router.post('/event', async(req,res)=>{
+    const {error} = eventModel.validateEvent(req.body);
+    if(error){
+        res.send(error.details[0].message);
+        return;
+    }
+    const event = eventModel.Event(req.body);
+    await event.save()
+    .then((v)=>{
+        res.send(v);
+    })
+    .catch((err)=>{
+        res.send(err.message);
+    })
+});
+
 //UPDATE APIs✅
 router.put('/teacher-details/:id', adminauth,async (req,res) => {
     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();

@@ -25,9 +25,6 @@ if(!config.get('jwtPrivateKey')){
   process.exit(1);
 }
 
-
-
-
 //Connection to MongoDB
 const connectionString = `mongodb+srv://${config.get('DBUserName')}:${config.get('DBPassword')}@cluster0.dfr13.mongodb.net/OnYourMarks?retryWrites=true&w=majority`;
 connection.connectDB(connectionString,"OnYourMarks");
@@ -36,14 +33,16 @@ connection.connectDB(connectionString,"OnYourMarks");
 const app = express();
 app.use(express.json());
 app.use(helmet());
-var corsOption = {
-  origin: "*",
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-  allowedHeaders: 'Content-Type,Authorization,x-auth-token',
-  exposedHeaders: ['x-auth-token']
-};
-app.use(cors(corsOption));
+// var corsOption = {
+//   origin: "*",
+//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//   credentials: true,
+//   allowedHeaders: 'Content-Type,Authorization,x-auth-token',
+//   exposedHeaders: ['x-auth-token']
+// };
+app.use(cors({
+  origin : "*"
+}));
 
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({
@@ -53,7 +52,6 @@ if(app.get('env') === "development"){
    'common'
   ));
 }
-
 
 app.get('/python', (req, res) => {
   console.log("In Python");
@@ -82,14 +80,14 @@ app.use('/api/user',user);
 app.use('/api/verification',verification);
 
 //Default Route
-app.options('/', cors());
-app.options('/api/admin',cors());
+// app.options('/', cors());
+// app.options('/api/admin',cors());
 
-app.use(function (req,res,next) {
-  res.header("Access-Control-Allow-Origin","*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+// app.use(function (req,res,next) {
+//   res.header("Access-Control-Allow-Origin","*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 app.get("/",(req,res) => {
     // expressListRoutes(app, { prefix: '/api/admin' });
