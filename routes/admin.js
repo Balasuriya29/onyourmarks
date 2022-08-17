@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const app = express();
+const cors = require('cors');
 
 //Required Modules
 const studentModel = require('../models/studentmodel');
@@ -67,6 +68,10 @@ async function getStudent(id) {
     }
 }
 
+
+router.use(cors({
+    origin : "*"
+}));
 
 
 //me API
