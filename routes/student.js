@@ -23,11 +23,11 @@ function hasAuthority(role) {
     return role === 'Student';
 }
 
-router.options('/api/student/event',function (req,res){
-    res.setHeader("Access-Control-Allow-Origin","*");
-    res.setHeader("Access-Control-Allow-Methods","*");
-    res.setHeader("Access-Control-Allow-Headers","*");
-  })
+// router.options('/api/student/event',function (req,res){
+//     res.setHeader("Access-Control-Allow-Origin","*");
+//     res.setHeader("Access-Control-Allow-Methods","*");
+//     res.setHeader("Access-Control-Allow-Headers","*");
+//   })
 
 //GET APIs
 router.get('/mycca/:condition', auth, async(req,res)=>{

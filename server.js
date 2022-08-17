@@ -40,9 +40,11 @@ app.use(helmet());
 //   allowedHeaders: 'Content-Type,Authorization,x-auth-token',
 //   exposedHeaders: ['x-auth-token']
 // };
-app.use(cors({
-  origin : "http://localhost:52687/"
-}));
+app.use(cors({{}));
+app.options("/event",function(req,res){
+  res.setHeader("Access-Control-Allow-Origin","*");
+  next();
+});
 
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({
