@@ -67,6 +67,8 @@ async function getStudent(id) {
     }
 }
 
+
+
 //me API
 router.get("/me", auth, async (req, res) => {
     var role = req.user.role;
@@ -230,7 +232,7 @@ router.post('/event', async(req,res)=>{
         res.send(error.details[0].message);
         return;
     }
-    const event = eventModel.Event(req.body);
+    const event = await eventModel.Event(req.body);
     await event.save()
     .then((v)=>{
         res.send(v);
