@@ -55,6 +55,7 @@ if(app.get('env') === "development"){
 
 app.post("/event",async(req,res)=>{
   const {error} = eventModel.validateEvent(req.body);
+  res.setHeader("Access-Control-Allow-Origin","*");
   if(error){
       res.send(error.details[0].message);
       return;
