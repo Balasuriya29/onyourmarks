@@ -40,7 +40,7 @@ app.use(helmet());
 //   allowedHeaders: 'Content-Type,Authorization,x-auth-token',
 //   exposedHeaders: ['x-auth-token']
 // };
-app.use(cors({{}));
+app.use(cors());
 app.options("/event",function(req,res){
   res.setHeader("Access-Control-Allow-Origin","*");
   next();
