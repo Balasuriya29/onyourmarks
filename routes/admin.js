@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const app = express();
-const cors = require('cors');
 
 //Required Modules
 const studentModel = require('../models/studentmodel');
@@ -67,12 +66,6 @@ async function getStudent(id) {
         return null;
     }
 }
-
-
-router.use(cors({
-    origin : "*"
-}));
-
 
 //me API
 router.get("/me", auth, async (req, res) => {
@@ -231,9 +224,20 @@ router.post('/addStandardToTeacher/:id',adminauth, async (req,res)=>{
 });
 
 
-router.post('/event', cors({
-    origin : "*"
-}),async(req,res)=>{
+//UPDATE APIs✅
+router.put('/teacher-details/:id', adminauth,async (req,res) => {
+    var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
+    if(isValid) return res.send("Teacher ID is Invalid");
+    
+    const teacherToBeUpdated = await teacherModel.Teacher.findById(req.params.id);
+    teacherToBeUpdated.facultyId = req.body.facultyId;
+
+    teacherToBeUpdated.save().then((v) => {
+        res.send(v);
+    }).catch((err) => res.status(400).send(err.message));
+});
+
+router.put('/event',async(req,res)=>{
     const {error} = eventModel.validateEvent(req.body);
     if(error){
         res.send(error.details[0].message);
@@ -247,19 +251,6 @@ router.post('/event', cors({
     .catch((err)=>{
         res.send(err.message);
     })
-});
-
-//UPDATE APIs✅
-router.put('/teacher-details/:id', adminauth,async (req,res) => {
-    var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
-    if(isValid) return res.send("Teacher ID is Invalid");
-
-    const teacherToBeUpdated = await teacherModel.Teacher.findById(req.params.id);
-    teacherToBeUpdated.facultyId = req.body.facultyId;
-
-    teacherToBeUpdated.save().then((v) => {
-        res.send(v);
-    }).catch((err) => res.status(400).send(err.message));
 });
 
 router.put('/teacher-standard-change/:id',adminauth,async (req,res)=>{

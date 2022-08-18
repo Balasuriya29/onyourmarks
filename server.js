@@ -33,19 +33,7 @@ connection.connectDB(connectionString,"OnYourMarks");
 const app = express();
 app.use(express.json());
 app.use(helmet());
-// var corsOption = {
-//   origin: "*",
-//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   credentials: true,
-//   allowedHeaders: 'Content-Type,Authorization,x-auth-token',
-//   exposedHeaders: ['x-auth-token']
-// };
-app.use(cors({
-  origin : "*"
-}));
-app.options('*', cors({
-  origin : "*"
-}))
+app.use(cors());
 
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({
@@ -100,15 +88,6 @@ app.use('/api/user',user);
 app.use('/api/verification',verification);
 
 //Default Route
-// app.options('/', cors());
-// app.options('/api/admin',cors());
-
-// app.use(function (req,res,next) {
-//   res.header("Access-Control-Allow-Origin","*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
-
 app.get("/",(req,res) => {
     // expressListRoutes(app, { prefix: '/api/admin' });
     res.status(200).send("Everything is Working Perfectly!!!")
