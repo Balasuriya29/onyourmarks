@@ -44,7 +44,7 @@ if(app.get('env') === "development"){
   ));
 }
 
-app.put("/event",
+app.post("/event",
 
 function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
