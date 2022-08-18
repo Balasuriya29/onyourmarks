@@ -44,9 +44,18 @@ if(app.get('env') === "development"){
   ));
 }
 
-app.put("/event",async(req,res)=>{
+app.put("/event",
+
+function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  next();
+}
+,async(req,res)=>{
   const {error} = eventModel.validateEvent(req.body);
-  res.setHeader("Access-Control-Allow-Origin","*");
+  
   if(error){
       res.send(error.details[0].message);
       return;
@@ -54,9 +63,17 @@ app.put("/event",async(req,res)=>{
   const event = await eventModel.Event(req.body);
   await event.save()
   .then((v)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
       res.send(v);
   })
   .catch((err)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
       res.send(err.message);
   })
 });

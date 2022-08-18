@@ -16,18 +16,11 @@ const {interestModel, validateInterests} = require('../models/interestmodel');
 const { feedback_model, feedback } = require('../models/feedbackmodel');
 const { attendance_model } = require('../models/attendancemodel');
 const { Student } = require('../models/studentmodel');
-const eventModel = require('../models/eventmodel');
 
 //Functions
 function hasAuthority(role) {
     return role === 'Student';
 }
-
-// router.options('/api/student/event',function (req,res){
-//     res.setHeader("Access-Control-Allow-Origin","*");
-//     res.setHeader("Access-Control-Allow-Methods","*");
-//     res.setHeader("Access-Control-Allow-Headers","*");
-//   })
 
 //GET APIs
 router.get('/mycca/:condition', auth, async(req,res)=>{
