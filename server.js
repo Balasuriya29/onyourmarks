@@ -43,6 +43,9 @@ app.use(helmet());
 app.use(cors({
   origin : "*"
 }));
+app.options('*', cors({
+  origin : "*"
+}))
 
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({
