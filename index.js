@@ -8,6 +8,7 @@ const config = require('config');
 const cors = require('cors');
 const expressListRoutes = require('express-list-routes');
 const {spawn} = require('child_process');
+const path = require('path');
 
 //Importing Files
 const connection = require('./connection');
@@ -44,6 +45,7 @@ if(app.get('env') === "development"){
   ));
 }
 
+
 app.get('/python', (req, res) => {
   console.log("In Python");
   var dataToSend;
@@ -74,6 +76,10 @@ app.use('/api/verification',verification);
 app.get("/",(req,res) => {
     // expressListRoutes(app, { prefix: '/api/admin' });
     res.status(200).send("Everything is Working Perfectly!!!")
+});
+
+app.get("/admin",(req,res) => {
+  res.status(200).sendFile(path.join(__dirname+'/web/index.html'));
 });
 
 //Starting Listening
