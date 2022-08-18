@@ -56,6 +56,23 @@ if(app.get('env') === "development"){
   ));
 }
 
+app.put("/event",async(req,res)=>{
+  const {error} = eventModel.validateEvent(req.body);
+  res.setHeader("Access-Control-Allow-Origin","*");
+  if(error){
+      res.send(error.details[0].message);
+      return;
+  }
+  const event = await eventModel.Event(req.body);
+  await event.save()
+  .then((v)=>{
+      res.send(v);
+  })
+  .catch((err)=>{
+      res.send(err.message);
+  })
+});
+
 app.get('/python', (req, res) => {
   console.log("In Python");
   var dataToSend;
