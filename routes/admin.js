@@ -367,7 +367,8 @@ router.get('/allteachers',async (req,res) => {
     } catch (err) {
         res.status(404).send("Unexpected Error");
     }
-})
+});
+
 
 router.get('/allstudents',async (req,res) => {
     try {
@@ -529,7 +530,24 @@ router.get('/subjects/unassigned',adminauth, async(req,res)=>{
 router.get('/events',async(req,res)=>{
     const events = await eventModel.Event.find();
     res.send(events);
-})
+});
+
+router.get('/student-attendance/:id',adminauth, async (req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    await attendance_model.find({
+        std_id : req.params.id
+    })
+    .populate('student_id', 'first_name last_name')
+    .populate('std_id', 'std_name')
+    .then((v) => {
+        res.send(v);
+    })
+    .catch((err) => {
+        res.status(400).send(err.message);
+    });
+});
+
 
 //DELETE APIs
 router.delete("/student/:id",adminauth,async (req,res)=>{

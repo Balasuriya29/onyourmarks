@@ -33,18 +33,15 @@ connection.connectDB(connectionString,"OnYourMarks");
 const app = express();
 app.use(express.json());
 app.use(helmet());
-// var corsOption = {
-//   origin: "*",
-//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   credentials: true,
-//   allowedHeaders: 'Content-Type,Authorization,x-auth-token',
-//   exposedHeaders: ['x-auth-token']
-// };
+var corsOption = {
+  origin: "*",
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  allowedHeaders: 'Content-Type,Authorization,x-auth-token',
+  exposedHeaders: ['x-auth-token']
+};
 app.use(cors());
-app.options("/event",function(req,res){
-  res.setHeader("Access-Control-Allow-Origin","*");
-  next();
-});
+
 
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({
