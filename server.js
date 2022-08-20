@@ -33,6 +33,13 @@ connection.connectDB(connectionString,"OnYourMarks");
 const app = express();
 app.use(express.json());
 app.use(helmet());
+var corsOption = {
+  origin: "*",
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  allowedHeaders: 'Content-Type,Authorization,x-auth-token',
+  exposedHeaders: ['x-auth-token']
+};
 app.use(cors());
 
 if(app.get('env') === "development"){
