@@ -33,16 +33,7 @@ connection.connectDB(connectionString,"OnYourMarks");
 const app = express();
 app.use(express.json());
 app.use(helmet());
-// var corsOption = {
-//   origin: "*",
-//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   credentials: true,
-//   allowedHeaders: 'Content-Type,Authorization,x-auth-token',
-//   exposedHeaders: ['x-auth-token']
-// };
-app.use(cors({
-  origin : "*"
-}));
+app.use(cors());
 
 if(app.get('env') === "development"){
   app.use(mongoose_morgan({
@@ -52,6 +43,40 @@ if(app.get('env') === "development"){
    'common'
   ));
 }
+
+app.post("/event",
+
+function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  next();
+}
+,async(req,res)=>{
+  const {error} = eventModel.validateEvent(req.body);
+  
+  if(error){
+      res.send(error.details[0].message);
+      return;
+  }
+  const event = await eventModel.Event(req.body);
+  await event.save()
+  .then((v)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+      res.send(v);
+  })
+  .catch((err)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+      res.send(err.message);
+  })
+});
 
 app.get('/python', (req, res) => {
   console.log("In Python");
@@ -80,15 +105,6 @@ app.use('/api/user',user);
 app.use('/api/verification',verification);
 
 //Default Route
-// app.options('/', cors());
-// app.options('/api/admin',cors());
-
-// app.use(function (req,res,next) {
-//   res.header("Access-Control-Allow-Origin","*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
-
 app.get("/",(req,res) => {
     // expressListRoutes(app, { prefix: '/api/admin' });
     res.status(200).send("Everything is Working Perfectly!!!")

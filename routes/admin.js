@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const app = express();
-const cors = require('cors');
 
 //Required Modules
 const studentModel = require('../models/studentmodel');
@@ -67,12 +66,6 @@ async function getStudent(id) {
         return null;
     }
 }
-
-
-router.use(cors({
-    origin : "*"
-}));
-
 
 //me API
 router.get("/me", auth, async (req, res) => {
@@ -219,7 +212,7 @@ router.post("/subject",adminauth,async (req,res)=>{
 router.post('/addStandardToTeacher/:id',adminauth, async (req,res)=>{
     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
     if(isValid) return res.send("Teacher ID is Invalid");
-
+    
     const newTeacherStandard = await student_teacher_relation.studentTeacherRelationModel({
         teacher_id : req.params.id,
         subject_id : req.body.subject_id,
@@ -230,10 +223,7 @@ router.post('/addStandardToTeacher/:id',adminauth, async (req,res)=>{
     res.send(newTeacherStandard);
 });
 
-
-router.post('/event', cors({
-    origin : "*"
-}),async(req,res)=>{
+router.post('/event',async(req,res)=>{
     const {error} = eventModel.validateEvent(req.body);
     if(error){
         res.send(error.details[0].message);
@@ -253,7 +243,7 @@ router.post('/event', cors({
 router.put('/teacher-details/:id', adminauth,async (req,res) => {
     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
     if(isValid) return res.send("Teacher ID is Invalid");
-
+    
     const teacherToBeUpdated = await teacherModel.Teacher.findById(req.params.id);
     teacherToBeUpdated.facultyId = req.body.facultyId;
 
@@ -288,7 +278,7 @@ router.put('/teacher-standard-change/:id',adminauth,async (req,res)=>{
 router.put('/student/:id', adminauth,async (req,res) => {
     var isValid = (await isNotValidId(studentModel.Student,req.params.id)).valueOf();
     if(isValid) return res.send("Student ID is Invalid");
-
+    
     const studentToBeUpdated = await studentModel.Student.findOneAndUpdate(
         {
             _id: req.params.id
@@ -297,18 +287,18 @@ router.put('/student/:id', adminauth,async (req,res) => {
         {
             new: true,
         }
-    );
+        );
+        
+        res.status(200).send(studentToBeUpdated);
+    });
     
-    res.status(200).send(studentToBeUpdated);
-});
-
-router.put('/subject/:id', adminauth,async (req,res) => {
-    var isValid = (await isNotValidId(subjectModel.Subject,req.params.id)).valueOf();
-    if(isValid) return res.send("Subject ID is Invalid");
-    req.body.std_id.forEach( async element => {
-        const studentTeacher = await student_teacher_relation.studentTeacherRelationModel({
-            teacher_id:req.body.teacher,
-            subject_id:req.params.id,
+    router.put('/subject/:id', adminauth,async (req,res) => {
+        var isValid = (await isNotValidId(subjectModel.Subject,req.params.id)).valueOf();
+        if(isValid) return res.send("Subject ID is Invalid");
+        req.body.std_id.forEach( async element => {
+            const studentTeacher = await student_teacher_relation.studentTeacherRelationModel({
+                teacher_id:req.body.teacher,
+                subject_id:req.params.id,
             std_id:element
         });
         studentTeacher
@@ -323,11 +313,11 @@ router.put('/subject/:id', adminauth,async (req,res) => {
 router.put('/subject-details/:id', adminauth, async (req,res) => {
     var isValid = (await isNotValidId(subjectModel.Subject,req.params.id)).valueOf();
     if(isValid) return res.send("Subject ID is Invalid");
-
+    
     await subjectModel.Subject.updateOne({
         _id : req.params.id
     },
-        req.body,
+    req.body,
     {
         new:true
     })
@@ -363,7 +353,7 @@ router.get('/allteachers',async (req,res) => {
         const teachers = await teacherModel.Teacher.find();
         if(!teachers) return res.status(404).send("There is no teacher found");
         res.send(teachers);
-
+        
     } catch (err) {
         res.status(404).send("Unexpected Error");
     }
@@ -373,16 +363,16 @@ router.get('/allteachers',async (req,res) => {
 router.get('/allstudents',async (req,res) => {
     try {
         const students = await studentModel.Student
-                        .find()
-                        .populate({
-                            path : 'std_id',
-                            populate : {
-                                path : 'subject_id',
-                            }
-                        });
+        .find()
+        .populate({
+            path : 'std_id',
+            populate : {
+                path : 'subject_id',
+            }
+        });
         if(!students) return res.status(404).send("There is no student found");
         res.send(students);
-
+        
     } catch (err) {
         res.status(404).send("Unexpected Error");
     }
@@ -547,6 +537,20 @@ router.get('/student-attendance/:id',adminauth, async (req, res) => {
         res.status(400).send(err.message);
     });
 });
+
+router.get('/attendance',adminauth, async(req,res)=>{
+    // if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    await attendance_model.find()
+    .populate('student_id', 'first_name last_name roll_no')
+    .populate('std_id','std_name')
+    .then((v)=>{
+        res.send(v);
+    })
+    .catch((err)=>{
+        res.send(err.message).status(400);
+    })
+})
 
 
 //DELETE APIs
