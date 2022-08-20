@@ -11,6 +11,7 @@ const chatmodel = require('../models/chatmodel');
 const messagemodel = require('../models/messagemodel');
 const { examStandardModel } = require('../models/exam-std-relation');
 const { attendance_model } = require('../models/attendancemodel');
+const { homeworkmodel } = require('../models/homeworkmodel');
 
 //Functions
 function hasAuthority(role) {
@@ -89,7 +90,60 @@ router.post('/remove-student-attendance/:id',auth, async (req, res) => {
     });
 });
 
+router.post('/homework', auth, async (req,res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    await homeworkmodel.updateOne({
+        subject : req.body.subject,
+        std_id : req.body.std_id
+    },
+    {
+        title : req.body.title,
+        description : req.body.description,
+        teacher_id : req.user._id,
+        date : Date.now()
+    },
+    {
+        upsert : true
+    }).then((v) => {
+        res.send(v);
+    })
+    .catch((err) => {
+        res.status(400).send(err.message);
+    });
+});
+
 //GET APIs
+router.get('/all-homeworks', auth, async (req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+    
+    const teacherstdrelation = await studentTeacherRelation.studentTeacherRelationModel
+    .find({
+        teacher_id:req.user._id
+    })
+    .select("std_id");
+    
+    const stds = []
+    teacherstdrelation.forEach(std => {
+        stds.push(std["std_id"]);
+    });
+
+    await homeworkmodel
+    .find({
+        std_id : {
+            $in : stds
+        }
+    })
+    .populate('teacher_id','name')
+    .populate('std_id','std_name')
+    .then((v)=>{
+        res.send(v);
+    })
+    .catch((err) => {
+        res.send(err.message);
+    })
+});
+
 router.get('/student-attendance/:id',auth, async (req, res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
 

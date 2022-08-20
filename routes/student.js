@@ -16,6 +16,7 @@ const {interestModel, validateInterests} = require('../models/interestmodel');
 const { feedback_model, feedback } = require('../models/feedbackmodel');
 const { attendance_model } = require('../models/attendancemodel');
 const { Student } = require('../models/studentmodel');
+const { homeworkmodel } = require('../models/homeworkmodel');
 
 //Functions
 function hasAuthority(role) {
@@ -52,7 +53,23 @@ router.get('/myteachers/:std_id', auth, async(req,res)=>{
     }).catch((err)=>{
         res.send(err.message);
     });
-})
+});
+
+router.get('/my-homeworks/:std_id', auth, async (req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    await homeworkmodel
+    .find({
+        std_id : req.params.std_id
+    })
+    .populate('teacher_id','name')
+    .then((v)=>{
+        res.send(v);
+    })
+    .catch((err) => {
+        res.send(err.message);
+    })
+});
 
 router.get('/myexams/:std_id', auth, async(req,res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
