@@ -1,6 +1,6 @@
 //Required Packages
 const mongoose = require('mongoose');
-const Joi = require('Joi');
+const Joi = require('joi');
 
 //Defining a Schema
 const homeworkschema = mongoose.Schema({
