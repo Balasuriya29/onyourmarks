@@ -466,6 +466,14 @@ router.get('/teacher/:id',adminauth,async (req,res)=>{
     }
 });
 
+router.get('/cca/:studentId', adminauth, async(req,res)=>{
+    await cocurricularactivity.coCurricularActivity.find({
+        student_id : req.params.studentId,
+    }).then((v)=>{
+        res.send(v);
+    })
+});
+
 router.get('/teacher',adminauth,async(req,res)=>{
     await teacherModel.Teacher.find().then((v)=>{
         res.send(v);
