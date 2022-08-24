@@ -149,7 +149,6 @@ router.get('/mymarks',auth,async(req,res)=>{
     .catch((err)=>{
         res.send(err.message)
     });
-
 });
 
 router.get('/myinterests',auth,async (req,res) => {

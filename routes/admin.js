@@ -20,6 +20,7 @@ const _ = require('underscore');
 const crypt = require('../middleware/crypt');
 const eventModel = require('../models/eventmodel');
 const { attendance_model } = require('../models/attendancemodel');
+const { markmodel } = require('../models/marksmodel');
 
 //Functions
 async function isNotValidId(Model,id) {
@@ -348,6 +349,7 @@ router.put('/standard/:id', adminauth,async (req,res)=>{
 });
 
 //GET APIs
+
 router.get('/allteachers',async (req,res) => {
     try {
         const teachers = await teacherModel.Teacher.find();
@@ -429,13 +431,28 @@ router.get('/allstandards',async (req,res) => {
         const standards = await standardModel.standardModel
                         .find()
                         .populate('subject_id');
-        if(!standards) return res.status(404).send("There is no standard found");
+                        if(!standards) return res.status(404).send("There is no standard found");
         res.send(standards);
 
     } catch (err) {
         res.status(400).send("Unexpected Error");
     }
 })
+
+router.get('/marks/:studentId', adminauth, async(req,res)=>{
+    // if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+    await markmodel.find({
+        student_id : req.params.studentId
+    })
+    .populate('exam_id',['exam_name', 'dates'])
+    .populate('subject_id',['sub_name','total_marks'])
+    .then((v)=>{
+        res.send(v);
+    })
+    .catch((err)=>{
+        res.send(err.message)
+    });
+});
 
 router.get('/teacher/:id',adminauth,async (req,res)=>{
     try{
