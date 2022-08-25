@@ -56,7 +56,7 @@ router.post('/district', async (req,res) => {
 });
 
 router.get('/district', async (req,res)=>{
-    const allDistricts = await district.find();
+    const allDistricts = await district.find().populate('school_id');
     res.send(allDistricts);
 });
 
