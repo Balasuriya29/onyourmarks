@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 
-
 const schema = mongoose.Schema({
     activity_name:String,
     activity_type:String, 

@@ -240,6 +240,22 @@ router.post('/event',async(req,res)=>{
     })
 });
 
+// router.post('/school', async (req,res) => {
+//     const {error} = eventModel.validateEvent(req.body);
+//     if(error){
+//         res.send(error.details[0].message);
+//         return;
+//     }
+//     const event = await eventModel.Event(req.body);
+//     await event.save()
+//     .then((v)=>{
+//         res.send(v);
+//     })
+//     .catch((err)=>{
+//         res.send(err.message);
+//     })
+// });
+
 //UPDATE APIs✅
 router.put('/teacher-details/:id', adminauth,async (req,res) => {
     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
@@ -482,7 +498,6 @@ router.get('/teacher',adminauth,async(req,res)=>{
         res.send(err.message);
     })
 });
-
 
 router.get('/teacher-std-sub/:id',adminauth,async (req,res)=>{
     var isValid = (await isNotValidId(teacherModel.Teacher,req.params.id)).valueOf();
