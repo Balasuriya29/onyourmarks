@@ -634,5 +634,13 @@ router.delete("/exam/:id",adminauth,async (req,res)=>{
     .catch((err)=>res.send(err).status(404));
 })
 
+
+//Temp
+router.put("/temp/student",async(req,res)=>{
+    await studentModel.Student.updateMany({
+        "school_id":""
+    })
+})
+
 module.exports = router;
 
