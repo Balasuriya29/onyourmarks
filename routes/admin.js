@@ -1,7 +1,6 @@
 //Required Packages
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
 const app = express();
 
 //Required Modules
@@ -239,22 +238,6 @@ router.post('/event',async(req,res)=>{
         res.send(err.message);
     })
 });
-
-// router.post('/school', async (req,res) => {
-//     const {error} = eventModel.validateEvent(req.body);
-//     if(error){
-//         res.send(error.details[0].message);
-//         return;
-//     }
-//     const event = await eventModel.Event(req.body);
-//     await event.save()
-//     .then((v)=>{
-//         res.send(v);
-//     })
-//     .catch((err)=>{
-//         res.send(err.message);
-//     })
-// });
 
 //UPDATE APIs✅
 router.put('/teacher-details/:id', adminauth,async (req,res) => {

@@ -6,8 +6,14 @@ const schoolSchema = mongoose.Schema({
     "address":String,
     "state":String,
     "city":String,
-    "noOfStudents":String,
-    "noOfTeachers":String,
+    "noOfStudents":{
+        type : Number,
+        default : 0
+    },
+    "noOfTeachers":{
+        type : Number,
+        default : 0
+    },
 })
 
 const School = mongoose.model('newSchool', schoolSchema, 'school');

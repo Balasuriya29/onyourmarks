@@ -2,24 +2,23 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 
 const adminSchema = mongoose.Schema({
-    schoolName : String,
-    district_id : {
+    school_id : {
         type : mongoose.Types.ObjectId,
-        ref : "newDistrict"
+        ref : "newSchool"
     },
     username : String,
     password : String
 });
 
-const district = mongoose.model('newDistrict',adminSchema,'Districts');
+const admin = mongoose.model('newAdmin',adminSchema,'Admins');
 
-function validateDistrict(district){
+function validateAdmin(admin){
     const tempSchema = Joi.object({
-        districtName : Joi.string().required(),
-        school_id : Joi.string().required(),
-        state : Joi.string().required(),
+        school_id :Joi.string().required(),
+        username : Joi.string().required(),
+        password : Joi.string().required()
     });
-    return tempSchema.validate(district);
+    return tempSchema.validate(admin);
 }
 
-module.exports = {district, validateDistrict};
+module.exports = {admin, validateAdmin};

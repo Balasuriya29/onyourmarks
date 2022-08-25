@@ -8,7 +8,6 @@ const districtSchema = mongoose.Schema({
         ref : "newSchool"
     },
     state : String,
-
 });
 
 const district = mongoose.model('newDistrict',districtSchema,'Districts');

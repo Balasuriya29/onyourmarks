@@ -17,6 +17,7 @@ const student = require('./routes/student');
 const chat = require('./routes/chat');
 const user = require('./routes/user');
 const verification = require('./routes/verification');
+const superuser = require('./routes/superuser');
 
 //Check for jwtPrivateKey
 if(!config.get('jwtPrivateKey')){
@@ -69,6 +70,7 @@ app.use('/api/student',student);
 app.use('/api/chat',chat);
 app.use('/api/user',user);
 app.use('/api/verification',verification);
+app.use('/api/superUser', superuser);
 
 //Default Route
 app.get("/",(req,res) => {
