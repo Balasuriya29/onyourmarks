@@ -60,4 +60,9 @@ router.get('/district', async (req,res)=>{
     res.send(allDistricts);
 });
 
+// router.get('/school', async (req,res)=>{
+//     const all = await district.find();
+//     res.send(allDistricts);
+// });
+
 module.exports = router;
