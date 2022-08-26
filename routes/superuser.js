@@ -56,9 +56,21 @@ router.post('/district', async (req,res) => {
     })
 });
 
-router.get('/district', async (req,res)=>{
-    const allDistricts = await district.find();
+router.get('/alldistrict', async (req,res)=>{
+    const allDistricts = await district.find().populate('school_id');
     res.send(allDistricts);
+});
+
+router.get('/allschool', async (req,res)=>{
+    const allSchools = await School.find();
+    res.send(allSchools);
+});
+
+router.get('/allschool/:district', async (req,res) => {
+    const schools = await district.find({
+        districtName : req.params.district
+    }).populate('school_id')
+    res.send(schools);
 });
 
 // router.get('/school', async (req,res)=>{

@@ -20,6 +20,7 @@ const crypt = require('../middleware/crypt');
 const eventModel = require('../models/eventmodel');
 const { attendance_model } = require('../models/attendancemodel');
 const { markmodel } = require('../models/marksmodel');
+const { learningComingModel } = require('../models/learningmodel');
 
 //Functions
 async function isNotValidId(Model,id) {
@@ -641,6 +642,22 @@ router.put("/temp/student",async(req,res)=>{
     }).then((v)=>{
         res.send(v);
     })
+})
+
+router.post('/lc', async (req, res) => {
+    const newlc = await learningComingModel(req.body);
+
+    newlc.save().then((v)=>{
+        res.send(v);
+    }).catch((err) => {
+        res.send(err.message);
+    });
+});
+
+router.get('/lc', async (req,res) => {
+    const lcs = await learningComingModel.find();
+
+    res.send(lcs);
 })
 
 module.exports = router;
