@@ -12,6 +12,7 @@ const messagemodel = require('../models/messagemodel');
 const { examStandardModel } = require('../models/exam-std-relation');
 const { attendance_model } = require('../models/attendancemodel');
 const { homeworkmodel } = require('../models/homeworkmodel');
+const { learningComingStudentModel } = require('../models/learningOCmodel');
 
 //Functions
 function hasAuthority(role) {
@@ -112,6 +113,17 @@ router.post('/homework', auth, async (req,res) => {
         res.status(400).send(err.message);
     });
 });
+
+router.post('/lcOfStudent', auth, async (req, res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+
+    await learningComingStudentModel(req.body)
+    .then((v) => {
+        res.send(v);    
+    }).catch((err) => {
+        res.send(err.message);
+    });
+})
 
 //GET APIs
 router.get('/all-homeworks', auth, async (req, res) => {

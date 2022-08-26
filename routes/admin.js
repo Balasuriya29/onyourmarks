@@ -157,7 +157,7 @@ router.post("/teacher", adminauth, async (req, res)=>{
             })
         });
         const user = new userModel.users({
-            username:doc1.faultyId,
+            username:doc1.facultyId,
             password:hashed,
             user_id: doc1._id, 
             role: "Teacher"
@@ -655,7 +655,7 @@ router.get('/lc', async (req,res) => {
     const lcs = await learningComingModel.find();
 
     res.send(lcs);
-})
+});
 
 module.exports = router;
 

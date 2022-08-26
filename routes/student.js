@@ -178,6 +178,16 @@ router.post('/cca', auth, async (req,res)=>{
     });
 });
 
+router.post('/lc', async (req, res) => {
+    const newlc = await learningComingModel(req.body);
+
+    newlc.save().then((v)=>{
+        res.send(v);
+    }).catch((err) => {
+        res.send(err.message);
+    });
+});
+
 router.post('/feedback/:id', auth , async (req,res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
 
