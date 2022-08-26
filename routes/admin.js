@@ -32,6 +32,7 @@ async function isNotValidId(Model,id) {
     }
     return doc === null;
 }
+
 async function getTeacher(id) {
     try {
         const teacherDetails = await teacherModel.Teacher
@@ -156,7 +157,7 @@ router.post("/teacher", adminauth, async (req, res)=>{
             })
         });
         const user = new userModel.users({
-            username:doc1.faultyId,
+            username:doc1.facultyId,
             password:hashed,
             user_id: doc1._id, 
             role: "Teacher"
@@ -636,7 +637,9 @@ router.delete("/exam/:id",adminauth,async (req,res)=>{
 //Temp
 router.put("/temp/student",async(req,res)=>{
     await studentModel.Student.updateMany({
-        "school_id":""
+        school_id:"6307497740c48eac9003d5d4"
+    }).then((v)=>{
+        res.send(v);
     })
 })
 

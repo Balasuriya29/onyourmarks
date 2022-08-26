@@ -6,6 +6,7 @@ const router = express.Router();
 const { validateSchool, School } = require('../models/schoolmodel');
 const { validateAdmin, admin } = require('../models/adminmodel');
 const { validateDistrict, district } = require('../models/districtmodel');
+const { Student } = require('../models/studentmodel');
 
 router.post('/school', async (req,res) => {
     const {error} = validateSchool(req.body);
@@ -64,5 +65,24 @@ router.get('/district', async (req,res)=>{
 //     const all = await district.find();
 //     res.send(allDistricts);
 // });
+
+router.get('/student/:school_id', async(req,res)=>{
+    await Student.find({
+        school_id : req.params.school_id
+    }).then((v)=>{
+        res.send(v);
+    }).catch((err)=>{
+        res.send(err.message);
+    })
+});
+
+
+router.get('/school',async (req,res)=>{
+    await School.find().then((v)=>{
+        res.send(v);
+    }).catch((err)=>{
+        res.send(err.message);
+    })
+});
 
 module.exports = router;
