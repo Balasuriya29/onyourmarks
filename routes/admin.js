@@ -636,6 +636,20 @@ router.delete("/exam/:id",adminauth,async (req,res)=>{
 
 
 //Temp
+
+router.get('/student-avg/:id', async(req,res)=>{
+    const marks = await markmodel.find({
+        student_id:req.params.id
+    }).populate(
+        "subject_id"
+    ).populate(
+        "exam_id",["exam_name"]
+    );
+    res.send(marks);
+});
+
+
+
 router.put("/temp/student",async(req,res)=>{
     await studentModel.Student.updateMany({
         school_id:"6307497740c48eac9003d5d4"
