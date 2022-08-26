@@ -227,5 +227,21 @@ router.delete('/cca/:id', auth, async (req,res)=>{
 });
 
 
+router.get('/pc/myexams/:id',async(req,res)=>{
+    const examids = await marksmodel.markmodel.find({
+        student_id : req.params.id
+    },["exam_id"]);
+    res.send(examids);
+})
+
+router.get('/pc/subjects/:id',async(req,res)=>{
+    const subjects = await marksmodel.markmodel.find({
+        exam_id : req.params.id
+    })
+    .populate("exam_id",["exam_name"])
+    .populate("subject_id",["sub_name","total_marks"]);
+    res.send(subjects);
+})
+
 
 module.exports = router;
