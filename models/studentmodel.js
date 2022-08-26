@@ -25,6 +25,10 @@ const studentSchema = new mongoose.Schema({
     permanentAddress: String,
     motherTongue: String,
     bloodGroup: String,
+    school_id:{
+        type: mongoose.Types.ObjectId,
+        ref : 'newSchool'
+    }
 });
 
 //Method for Token Generation
