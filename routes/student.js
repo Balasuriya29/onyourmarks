@@ -20,7 +20,7 @@ const { homeworkmodel } = require('../models/homeworkmodel');
 
 //Functions
 function hasAuthority(role) {
-    return role === 'Student' || role === 'Admin';
+    return role === 'Student' || role === 'Admin' || role === 'Teacher';
 }
 
 //GET APIs
