@@ -274,7 +274,7 @@ router.get('/student-dashboard/:id', auth, async(req,res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     var studentDashboardDetails = [];
     const student = await studentModel.Student
-                    .findById(id)
+                    .findById(req.params.id)
                     .populate({
                                 path : 'std_id',
                                 populate : {
