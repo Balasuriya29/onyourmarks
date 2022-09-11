@@ -13,6 +13,7 @@ const { examStandardModel } = require('../models/exam-std-relation');
 const { attendance_model } = require('../models/attendancemodel');
 const { homeworkmodel } = require('../models/homeworkmodel');
 const { learningComingStudentModel } = require('../models/learningOCmodel');
+const { coCurricularActivity } = require('../models/cocurricularactivity');
 
 //Functions
 function hasAuthority(role) {
@@ -267,6 +268,26 @@ router.get('/students-without-chat',auth,async(req,res)=>{
     }).catch((err)=>{
         res.send(err.message);
     })
-})
+});
+
+router.get('/student-dashboard/:id', auth, async(req,res) => {
+    if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
+    var studentDashboardDetails = [];
+    const student = await studentModel.Student.findById(req.params.id);
+    const studentMarks = await marksModel.markmodel.find({
+                            student_id : req.params.id
+                         })
+                         .populate('exam_id',['exam_name', 'dates'])
+                         .populate('subject_id',['sub_name','total_marks']);
+    const studentActivities = await coCurricularActivity.find ({
+        student_id : req.params.id,
+    });
+
+    studentDashboardDetails.push(student);
+    studentDashboardDetails.push(studentMarks); 
+    studentDashboardDetails.push(studentActivities);
+
+    res.status(200).send(studentDashboardDetails);
+}); 
 
 module.exports = router;
