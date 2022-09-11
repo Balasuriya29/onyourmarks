@@ -273,7 +273,14 @@ router.get('/students-without-chat',auth,async(req,res)=>{
 router.get('/student-dashboard/:id', auth, async(req,res) => {
     if(!(hasAuthority(req.user.role).valueOf())) return res.status(403).send("This is Forbidden Call for You");
     var studentDashboardDetails = [];
-    const student = await studentModel.Student.findById(req.params.id);
+    const student = await studentModel.Student
+                    .findById(id)
+                    .populate({
+                                path : 'std_id',
+                                populate : {
+                                    path : 'subject_id',
+                                }
+                            });
     const studentMarks = await marksModel.markmodel.find({
                             student_id : req.params.id
                          })
