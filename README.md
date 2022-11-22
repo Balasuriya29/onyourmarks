@@ -14,7 +14,8 @@
 **DataBase:** MongoDB, Firebase
 
 **Deployment Platform of API:** Heroku
-Since, This Repo contains only the BackEnd Flutter File, This Link will direct you to FrontEnd Repo 
+
+Since, This Repo contains only the BackEnd Node Js File, This Link will direct you to FrontEnd Repo 
 [FrontEnd Repo Link](https://github.com/Balasuriya29/onyourmarks-frontend)
 
 ## API Reference
@@ -25,7 +26,7 @@ Since, This Repo contains only the BackEnd Flutter File, This Link will direct y
 
     https://on-your-marks.herokuapp.com/
 
-* Otherthan this, only few APIs can be accessed others are secured with jwt tokens  
+* In Addition to this only few APIs can be accessed, Others are secured with jwt tokens  
 
 #### Get all teachers in DB
 
