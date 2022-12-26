@@ -24,7 +24,7 @@ Since, This Repo contains only the BackEnd Node Js File, This Link will direct y
 
 #### Test API(to check server is running without error)
 
-    https://on-your-marks.herokuapp.com/
+    http://onyourmarks.onrender.com/
 
 * In Addition to this only few APIs can be accessed, Others are secured with jwt tokens  
 
